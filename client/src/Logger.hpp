@@ -1,8 +1,8 @@
 #pragma once
 
 #include <functional>
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 
 enum class LogLevel : int {
     NOLOG       = -1,
@@ -117,7 +117,8 @@ class Logger {
         }
 #else
         static void debug(const std::string & /* unused */)
-        {}
+        {
+        }
 #endif
 #ifndef NDEBUG
         /**
@@ -137,7 +138,8 @@ class Logger {
         }
 #else
         static void trace(const std::string & /* unused */)
-        {}
+        {
+        }
 #endif
         /**
          * @brief Logger subscribe
@@ -152,7 +154,9 @@ class Logger {
             std::function<void(const std::string &)> callback)
         {
             if (getCallbacks().find(type) == getCallbacks().end()) {
-                getCallbacks().emplace(type, std::unordered_map<std::string, std::function<void(const std::string &)>>());
+                getCallbacks().emplace(
+                    type,
+                    std::unordered_map<std::string, std::function<void(const std::string &)>>());
             }
             getCallbacks()[type].emplace(name, callback);
         }
@@ -198,7 +202,10 @@ class Logger {
             return logLevel;
         }
 
-        static std::unordered_map<LogLevel, std::unordered_map<std::string, std::function<void(const std::string &)>>> &getCallbacks()
+        static std::unordered_map<
+            LogLevel,
+            std::unordered_map<std::string, std::function<void(const std::string &)>>> &
+        getCallbacks()
         {
             static std::unordered_map<
                 LogLevel,

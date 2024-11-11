@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <functional>
+#include <string>
 
 class PathResolver {
     public:
@@ -23,7 +23,6 @@ class PathResolver {
         }
 
     private:
-
         static Resolver &getCustomResolver()
         {
             static Resolver resolver = defaultResolver;

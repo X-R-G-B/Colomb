@@ -1,8 +1,8 @@
+#include "Logger.hpp"
 #include <chrono>
 #include <iostream>
 #include <sstream>
 #include "date/date.h"
-#include "Logger.hpp"
 
 #ifdef _WIN32
     #define NOGDI  // All GDI defines and routines
@@ -60,16 +60,16 @@ void Logger::print(LogLevel levelT, const std::string &level, const std::string 
 
 #else
     static std::unordered_map<LogLevel, std::string> colors = {
-{LogLevel::Fatal,       "\033[31m"},
-{LogLevel::Error,       "\033[33m"},
-{LogLevel::Warn,        "\033[34m"},
-{LogLevel::Info,        "\033[32m"},
-{LogLevel::Debug,       "\033[38m"},
-{LogLevel::Trace,       "\033[30m"},
-{LogLevel::MAXLOGLEVEL, "\033[0m" },
-};
+        {LogLevel::Fatal,       "\033[31m"},
+        {LogLevel::Error,       "\033[33m"},
+        {LogLevel::Warn,        "\033[34m"},
+        {LogLevel::Info,        "\033[32m"},
+        {LogLevel::Debug,       "\033[38m"},
+        {LogLevel::Trace,       "\033[30m"},
+        {LogLevel::MAXLOGLEVEL, "\033[0m" },
+    };
 
-std::cerr << colors[levelT] << mes << colors[LogLevel::MAXLOGLEVEL] << std::endl;
+    std::cerr << colors[levelT] << mes << colors[LogLevel::MAXLOGLEVEL] << std::endl;
 #endif
 
     if (it != getCallbacks().end()) {
