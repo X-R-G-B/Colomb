@@ -7,6 +7,8 @@ on:
 env:
   BRANCH: "main"
   DATE_TAG: "v3.0.1"
+  RAYLIB_TAG: "5.0"
+  RAYLIB_CPP_TAG: "v5.0.2"
 
 jobs:
   release-create:
@@ -106,9 +108,45 @@ jobs:
         name: raylib.tar
         path: ./raylib.tar
 
+  raylibcpp-to-tar:
+    runs-on: ubuntu-latest
+    needs: release-create
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install deps
+      run: sudo apt-get update && sudo apt-get install -y tar git
+
+    - name: Get RaylibCPP
+      run: |
+        git clone https://github.com/RobLoach/raylib-cpp.git raylib-cpp-repo
+        cd raylib-cpp-repo || exit 14
+        git checkout ${{ env.RAYLIB_CPP_TAG }}
+        cd ..
+
+    - name: To Tar
+      run: |
+        tar -cvf raylib-cpp.tar raylib-cpp-repo
+
+    - name: Upload To Release
+      if: github.ref == 'refs/heads/main'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release upload ${{ needs.release-create.outputs.release }} ./raylib-cpp.tar
+
+    - name: Upload To Artifact
+      if: github.ref != 'refs/heads/main'
+      uses: actions/upload-artifact@v3
+      with:
+        name: raylib-cpp.tar
+        path: ./raylib-cpp.tar
+
   release-client-windows:
     runs-on: windows-latest
-    needs: [release-create, date-to-tar, raylib-to-tar]
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar]
 
     steps:
       - name: Checkout
@@ -153,7 +191,7 @@ jobs:
 
   release-client-linux:
     runs-on: ubuntu-latest
-    needs: [release-create, date-to-tar, raylib-to-tar]
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar]
 
     steps:
       - name: Checkout
@@ -193,7 +231,7 @@ jobs:
 
   release-client-macos:
     runs-on: macos-latest
-    needs: [release-create, date-to-tar, raylib-to-tar]
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar]
 
     steps:
       - name: Checkout
