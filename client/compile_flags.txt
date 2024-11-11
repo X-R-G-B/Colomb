@@ -1,3 +1,4 @@
 -Isrc
 -Ibuild/_deps/date-src/include
+-Ibuild/_deps/raylibcpp-src/include
 -std=c++20

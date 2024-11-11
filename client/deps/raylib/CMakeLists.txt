@@ -12,8 +12,8 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(raylib)
 
-target_include_directories(
+target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
-    ${raylib_SOURCE_DIR}/src
+    raylib
 )

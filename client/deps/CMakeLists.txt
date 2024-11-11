@@ -5,3 +5,4 @@ set(FETCHCONTENT_QUIET OFF)
 
 add_subdirectory(date)
 add_subdirectory(raylib)
+add_subdirectory(raylibcpp)
