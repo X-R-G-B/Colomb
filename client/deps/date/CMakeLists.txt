@@ -5,7 +5,7 @@ include(FetchContent)
 FetchContent_Declare(
     date
     CMAKE_ARGS "-DCMAKE_BUILD_TYPE=Release" "-DCMAKE_CONFIGURATION_TYPES=\"Release;Release\"" "-DCONFIG=Release"
-    URL "https://github.com/X-R-G-B/B-luga/releases/latest/download/date.tar"
+    URL "https://github.com/X-R-G-B/Colomb/releases/latest/download/date.tar"
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 
