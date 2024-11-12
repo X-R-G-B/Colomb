@@ -88,7 +88,7 @@ jobs:
       run: |
         mkdir enet-repo
         mkdir enet-repo/include
-        curl -sFfL -o enet-repo/include/enet.h "https://github.com/zpl-c/enet/releases/download/${{ env.ENET_TAG }}/enet.h"
+        curl -Lo enet-repo/include/enet.h "https://github.com/zpl-c/enet/releases/download/${{ env.ENET_TAG }}/enet.h"
 
     - name: To Tar
       run: |
