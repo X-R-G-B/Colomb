@@ -3,4 +3,5 @@
 -Isrc/utils
 -Ibuild/_deps/date-src/include
 -Ibuild/_deps/raylibcpp-src/include
+-Ibuild/_deps/enet-src/include/
 -std=c++20

@@ -69,6 +69,17 @@ if(DEFINED PACKAGED)
     )
 endif()
 
+target_compile_definitions(
+    ${PROJECT_NAME}
+    PUBLIC
+    SERVER_URL="localhost"
+)
+target_compile_definitions(
+    ${PROJECT_NAME}
+    PUBLIC
+    SERVER_PORT=3001
+)
+
 if(MSVC)
     target_compile_options(
         ${PROJECT_NAME}
