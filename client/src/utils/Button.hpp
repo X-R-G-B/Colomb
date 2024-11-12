@@ -11,6 +11,8 @@ class Button {
 
         bool isClicked(raylib::Window &window) const;
         void draw(raylib::Window &window) const;
+        void setPosition(raylib::Vector2 position);
+        const raylib::Texture &getTexture() const;
 
         Button &operator=(const Button &src);
 

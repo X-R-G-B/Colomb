@@ -4,12 +4,15 @@
 #include "Logger.hpp"
 #include "PathResolver.hpp"
 
-FirstMenu::FirstMenu(raylib::Window & /*unused*/) : _icon(PathResolver::resolve("assets/icons/favicon.png"))
+FirstMenu::FirstMenu(raylib::Window &window) : _icon(PathResolver::resolve("assets/icons/favicon.png"))
 {
     _buttons["ok"] = std::make_unique<Button>(
         raylib::Vector2(0, 0),
-        PathResolver::resolve("assets/icons/house.png"),
-        "test");
+        PathResolver::resolve("assets/icons/play.png"),
+        "");
+    const auto size = _buttons["ok"]->getTexture().GetSize();
+    _buttons["ok"]->setPosition(
+        raylib::Vector2(window.GetWidth() / 2.0 - size.x / 2, (window.GetHeight() / 2.0 + size.y)));
 }
 
 void FirstMenu::update(raylib::Window &window)

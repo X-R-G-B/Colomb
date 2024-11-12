@@ -43,3 +43,13 @@ Button &Button::operator=(const Button &src)
     this->_texture   = raylib::Texture(src._texture.GetData());
     return *this;
 }
+
+void Button::setPosition(raylib::Vector2 position)
+{
+    _position = position;
+}
+
+const raylib::Texture &Button::getTexture() const
+{
+    return _texture;
+}
