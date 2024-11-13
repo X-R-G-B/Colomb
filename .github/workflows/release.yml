@@ -94,8 +94,7 @@ jobs:
         git clone https://github.com/Tencent/rapidjson.git rapidjson-repo
         cd rapidjson-repo || exit 14
         git checkout ${{ env.RAPIDJSON_TAG }}
-        shopt -s extglob
-        rm -rf !(include,license.txt,readme.md,CHANGELOG.md)
+        rm -rf .git/ CMakeLists.txt *.in *.js *.json *.yml example/ docker/ bin/ CMakeModules/
         cd ..
 
     - name: To Tar
