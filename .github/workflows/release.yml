@@ -94,7 +94,8 @@ jobs:
         git clone https://github.com/Tencent/rapidjson.git rapidjson-repo
         cd rapidjson-repo || exit 14
         shopt -s extglob
-        rm !(include,license.txt,readme.md,CHANGELOG.md)
+        rm -rf !(include,license.txt,readme.md,CHANGELOG.md)
+        rm -rf .*
         git checkout ${{ env.RAPIDJSON_TAG }}
         cd ..
 
