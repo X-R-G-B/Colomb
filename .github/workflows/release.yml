@@ -95,7 +95,6 @@ jobs:
         cd rapidjson-repo || exit 14
         shopt -s extglob
         rm -rf !(include,license.txt,readme.md,CHANGELOG.md)
-        rm -rf .*
         git checkout ${{ env.RAPIDJSON_TAG }}
         cd ..
 
