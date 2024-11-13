@@ -122,7 +122,7 @@ nlohmann::json Network::receive(std::shared_ptr<IPeer> peer)
     auto peer_         = std::static_pointer_cast<Peer>(peer);
     std::string packet = _packets[peer_->getId()].second.front();
     _packets[peer_->getId()].second.pop();
-    return nlohmann::json(packet);
+    return nlohmann::json::parse(packet);
 }
 
 Network::Peer::Peer(const std::string &id, ENetPeer *peer) : _id(id), _peer(peer)

@@ -100,7 +100,7 @@ nlohmann::json Network::receive()
 {
     std::string packet = _packets.front();
     _packets.pop();
-    return nlohmann::json(packet);
+    return nlohmann::json::parse(packet);
 }
 
 bool Network::isConnected()

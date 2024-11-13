@@ -7,14 +7,18 @@ TextEntry::TextEntry(
     raylib::Vector2 size,
     raylib::Color bgColor,
     raylib::Color fgColor,
-    int fgSize)
+    int fgSize,
+    float fgSpacing,
+    int maxSize)
     : _rect(position, size),
       _bgColor(bgColor),
-      _fgColor(fgColor)
+      _fgColor(fgColor),
+      _maxSize(maxSize)
 {
     _text.text = "";
     _text.SetColor(fgColor);
     _text.SetFontSize(fgSize);
+    _text.SetSpacing(fgSpacing);
 }
 
 std::string &TextEntry::text()
@@ -24,6 +28,9 @@ std::string &TextEntry::text()
 
 void TextEntry::update(raylib::Window &window)
 {
+    if (_isReadonly) {
+        return;
+    }
     if (!window.IsFocused()) {
         return;
     }
@@ -45,7 +52,7 @@ void TextEntry::update(raylib::Window &window)
 
     auto c = GetCharPressed();
     while (c != 0) {
-        if ((c >= 32) && (c <= 125)) {
+        if ((c >= 32) && (c <= 125) && _text.text.length() < (size_t) _maxSize) {
             _text.text.push_back((char) c);
         }
         c = GetCharPressed();
@@ -91,4 +98,9 @@ TextEntry &TextEntry::operator=(const TextEntry &src)
 const raylib::Rectangle &TextEntry::getRect() const
 {
     return _rect;
+}
+
+void TextEntry::setReadonly(bool readOnly)
+{
+    _isReadonly = readOnly;
 }

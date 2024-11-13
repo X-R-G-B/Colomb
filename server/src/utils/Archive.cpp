@@ -42,6 +42,9 @@ std::string Archive::decompress(const void *data, size_t size)
     }
     std::string text = "";
     for (const auto &v : decompressedArray) {
+        if (v == '\0') {
+            break;
+        }
         text.push_back(v);
     }
     return text;

@@ -48,7 +48,8 @@ void GamesManager::update()
     for (auto &[key, peer] : _globalLobby) {
         while (network.hasPacket(peer)) {
             const auto message = network.receive(peer);
-            if (message["type"] == "join") {
+            const auto messageType = message.at("type").template get<std::string>();
+            if (messageType == "join") {
                 if (this->connectPeer(message["roomName"], peer)) {
                     nlohmann::json r = {
                         {"type",    "join"},
@@ -62,7 +63,7 @@ void GamesManager::update()
                     };
                     network.send(peer, r);
                 }
-            } else if (message["type"] == "create") {
+            } else if (messageType == "create") {
                 auto roomName    = this->createGame();
                 nlohmann::json r = {
                     {"type",     "create"},
