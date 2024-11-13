@@ -2,7 +2,7 @@
 #include <memory>
 #include "INetwork.hpp"
 
-Game::Player::Player(std::shared_ptr<INetwork::IPeer> peer): _peer(peer)
+Game::Player::Player(std::shared_ptr<INetwork::IPeer> peer) : _peer(peer)
 {
 }
 

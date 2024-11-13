@@ -1,10 +1,10 @@
 #pragma once
 
-#include <string>
 #include <queue>
+#include <string>
 
-#include "enet.h"
 #include "INetwork.hpp"
+#include "enet.h"
 
 class Network : public INetwork {
     public:
@@ -12,7 +12,7 @@ class Network : public INetwork {
         ~Network();
 
         Network &operator=(const Network &other) = delete;
-        Network &operator=(const Network other) = delete;
+        Network &operator=(const Network other)  = delete;
 
         bool init(const std::string &url, const unsigned int port) override;
         void update() override;

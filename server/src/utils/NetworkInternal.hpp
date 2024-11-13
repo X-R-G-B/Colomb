@@ -2,12 +2,12 @@
 
 #include <cstddef>
 #include <memory>
+#include <queue>
 #include <string>
 #include <unordered_map>
-#include <queue>
 
-#include "enet.h"
 #include "INetwork.hpp"
+#include "enet.h"
 
 class Network : public INetwork {
     public:
@@ -16,6 +16,7 @@ class Network : public INetwork {
                 Peer(const std::string &id, ENetPeer *peer);
                 const std::string &getId() const override;
                 ENetPeer *getPeer();
+
             private:
                 std::string _id;
                 ENetPeer *_peer;
@@ -29,7 +30,7 @@ class Network : public INetwork {
         ~Network();
 
         Network &operator=(const Network &other) = delete;
-        Network &operator=(const Network other) = delete;
+        Network &operator=(const Network other)  = delete;
 
         bool init(OnNewPeerFn onNewPeer, OnDisconnectPeerFn onDisconnectPeer) override;
         void update() override;

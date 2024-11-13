@@ -1,7 +1,7 @@
 #include "raylib-cpp.hpp"
-#include "ResourcesManager.hpp"
-#include "INetwork.hpp"
 #include "FirstMenu.hpp"
+#include "INetwork.hpp"
+#include "ResourcesManager.hpp"
 
 int main(int /*unused*/, const char **av)
 {

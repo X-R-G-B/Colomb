@@ -3,8 +3,8 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include "INetwork.hpp"
 #include "Game.hpp"
+#include "INetwork.hpp"
 
 #define gamesManager (GamesManager::GetInstance())
 
@@ -12,7 +12,7 @@ class GamesManager {
     public:
         static GamesManager &GetInstance();
         GamesManager &operator=(const GamesManager &other) = delete;
-        GamesManager &operator=(const GamesManager other) = delete;
+        GamesManager &operator=(const GamesManager other)  = delete;
 
         void update();
 

@@ -1,5 +1,5 @@
-#include "ResourcesManager.hpp"
 #include "GamesManager.hpp"
+#include "ResourcesManager.hpp"
 
 int main(int /*unused*/, const char **av)
 {

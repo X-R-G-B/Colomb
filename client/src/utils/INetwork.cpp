@@ -1,5 +1,5 @@
-#include "NetworkInternal.hpp"
 #include "INetwork.hpp"
+#include "NetworkInternal.hpp"
 
 INetwork &INetwork::GetInstance()
 {

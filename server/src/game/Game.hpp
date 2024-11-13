@@ -24,6 +24,6 @@ class Game {
 
     private:
         bool _isFinished = false;
-        bool _isStarted = false;
+        bool _isStarted  = false;
         std::unordered_map<std::string, Player> _players;
 };

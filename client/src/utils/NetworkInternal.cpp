@@ -1,7 +1,7 @@
 #define ENET_IMPLEMENTATION
-#include "enet.h"
-#include "Logger.hpp"
 #include "NetworkInternal.hpp"
+#include "Logger.hpp"
+#include "enet.h"
 
 Network::Network()
 {
@@ -45,19 +45,15 @@ void Network::update()
             case ENET_EVENT_TYPE_CONNECT:
                 Logger::debug("NETWORK: connection succesful");
                 event.peer->data = nullptr;
-                _server = event.peer;
+                _server          = event.peer;
                 break;
             case ENET_EVENT_TYPE_RECEIVE:
                 Logger::debug("NETWORK: receive data");
-                _packets.push(std::string(reinterpret_cast<char*>(event.packet->data)));
+                _packets.push(std::string(reinterpret_cast<char *>(event.packet->data)));
                 enet_packet_destroy(event.packet);
                 break;
-            case ENET_EVENT_TYPE_DISCONNECT:
-                Logger::warn("NETWORK: connection closed");
-                break;
-            default:
-                Logger::error("NETWORK: unknow event type: " + std::to_string(event.type));
-                break;
+            case ENET_EVENT_TYPE_DISCONNECT: Logger::warn("NETWORK: connection closed"); break;
+            default: Logger::error("NETWORK: unknow event type: " + std::to_string(event.type)); break;
         }
     }
 }

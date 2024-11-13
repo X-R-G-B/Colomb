@@ -1,9 +1,9 @@
+#include "GamesManager.hpp"
 #include <cmath>
-#include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 #include "INetwork.hpp"
-#include "GamesManager.hpp"
 #include "Logger.hpp"
 #include "rapidjson/document.h"
 
@@ -11,13 +11,12 @@ GamesManager::GamesManager()
 {
     std::srand(std::time(nullptr));
     network.init(
-        [this](std::shared_ptr<INetwork::IPeer> peer){
+        [this](std::shared_ptr<INetwork::IPeer> peer) {
             this->onNewPeer(peer);
         },
-        [this](std::shared_ptr<INetwork::IPeer> peer){
+        [this](std::shared_ptr<INetwork::IPeer> peer) {
             this->onDisconnectPeer(peer);
-        }
-    );
+        });
 }
 
 GamesManager &GamesManager::GetInstance()
