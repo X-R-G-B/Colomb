@@ -5,3 +5,4 @@ set(FETCHCONTENT_QUIET OFF)
 
 add_subdirectory(date)
 add_subdirectory(enet)
+add_subdirectory(rapidjson)

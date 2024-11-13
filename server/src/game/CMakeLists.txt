@@ -9,9 +9,6 @@ target_include_directories(
 target_sources(
     ${PROJECT_NAME}
     PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Logger.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Game.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GamesManager.cpp
 )
-
-add_subdirectory(utils)
-add_subdirectory(game)

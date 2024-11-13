@@ -1,8 +1,8 @@
 #include "NetworkInternal.hpp"
 #include "INetwork.hpp"
 
-INetwork &INetwork::GetInstance(std::string url)
+INetwork &INetwork::GetInstance()
 {
-    static Network network(url);
-    return network;
+    static Network networkInternal;
+    return networkInternal;
 }

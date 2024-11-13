@@ -3,7 +3,7 @@
 #include "Logger.hpp"
 #include "NetworkInternal.hpp"
 
-Network::Network(std::string url): _url(url)
+Network::Network()
 {
 }
 
@@ -17,8 +17,9 @@ Network::~Network()
     }
 }
 
-bool Network::init()
+bool Network::init(const std::string &url, const unsigned int port)
 {
+    _url = url;
     if (enet_initialize() != 0) {
         Logger::fatal("NETWORK: could not initialize the client");
         return false;
@@ -29,8 +30,8 @@ bool Network::init()
         return false;
     }
     ENetAddress address;
-    enet_address_set_host(&address, SERVER_URL);
-    address.port = SERVER_PORT;
+    enet_address_set_host(&address, _url.data());
+    address.port = port;
     enet_host_connect(_client, &address, 2, 0);
     _initialized = true;
     return true;
@@ -61,7 +62,7 @@ void Network::update()
     }
 }
 
-bool Network::send(std::string text)
+bool Network::send(const std::string &text)
 {
     ENetPacket *packet = enet_packet_create(text.data(), text.length() + 1, ENET_PACKET_FLAG_RELIABLE);
     if (packet == nullptr) {

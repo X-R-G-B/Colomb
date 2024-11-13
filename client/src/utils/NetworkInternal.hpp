@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <queue>
 
 #include "enet.h"
@@ -9,15 +8,15 @@
 
 class Network : public INetwork {
     public:
-        Network(std::string url);
+        Network();
         ~Network();
 
         Network &operator=(const Network &other) = delete;
         Network &operator=(const Network other) = delete;
 
-        bool init() override;
+        bool init(const std::string &url, const unsigned int port) override;
         void update() override;
-        bool send(std::string text) override;
+        bool send(const std::string &text) override;
         bool hasPacket() override;
         std::string receive() override;
 

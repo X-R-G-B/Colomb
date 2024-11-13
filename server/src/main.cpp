@@ -1,4 +1,5 @@
 #include "ResourcesManager.hpp"
+#include "GamesManager.hpp"
 
 int main(int /*unused*/, const char **av)
 {
@@ -9,8 +10,9 @@ int main(int /*unused*/, const char **av)
 #endif
     ResourcesManager::init(av[0]);
 
+    gamesManager;
     while (true) {
-        return 0;
+        gamesManager.update();
     }
     return 0;
 }

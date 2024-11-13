@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cstddef>
+#include <memory>
 #include <string>
-#include <vector>
+#include <unordered_map>
 #include <queue>
 
 #include "enet.h"
@@ -9,22 +11,36 @@
 
 class Network : public INetwork {
     public:
-        Network(std::string url);
+        class Peer : public INetwork::IPeer {
+            public:
+                Peer(const std::string &id, ENetPeer *peer);
+                const std::string &getId() const override;
+                ENetPeer *getPeer();
+            private:
+                std::string _id;
+                ENetPeer *_peer;
+        };
+        class PeerHashFn {
+            public:
+                size_t operator()(const std::shared_ptr<Peer> &peer) const;
+        };
+
+        Network();
         ~Network();
 
         Network &operator=(const Network &other) = delete;
         Network &operator=(const Network other) = delete;
 
-        bool init() override;
+        bool init(OnNewPeerFn onNewPeer, OnDisconnectPeerFn onDisconnectPeer) override;
         void update() override;
-        bool send(std::string text) override;
-        bool hasPacket() override;
-        std::string receive() override;
+        bool send(std::shared_ptr<IPeer> peer, const std::string &text) override;
+        bool hasPacket(std::shared_ptr<IPeer> peer) override;
+        std::string receive(std::shared_ptr<IPeer> peer) override;
 
     private:
         bool _initialized = false;
-        std::string _url;
-        ENetHost *_client = nullptr;
-        ENetPeer *_server = nullptr;
-        std::queue<std::string> _packets;
+        ENetHost *_server = nullptr;
+        std::unordered_map<std::string, std::pair<std::shared_ptr<Peer>, std::queue<std::string>>> _packets;
+        OnNewPeerFn _onNewPeer;
+        OnDisconnectPeerFn _onDisconnectPeer;
 };

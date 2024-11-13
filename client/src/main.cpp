@@ -1,6 +1,6 @@
 #include "raylib-cpp.hpp"
 #include "ResourcesManager.hpp"
-
+#include "INetwork.hpp"
 #include "FirstMenu.hpp"
 
 int main(int /*unused*/, const char **av)
@@ -14,8 +14,10 @@ int main(int /*unused*/, const char **av)
     raylib::Window window(800, 600, "Colomb");
     window.SetTargetFPS(60);
 
+    network.init(SERVER_URL, SERVER_PORT);
     auto firstmenu = FirstMenu(window);
     while (!window.ShouldClose()) {
+        network.update();
         firstmenu.update(window);
         window.BeginDrawing();
         window.ClearBackground(raylib::Color::White());

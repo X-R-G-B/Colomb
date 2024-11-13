@@ -1,6 +1,5 @@
-#include "FirstMenu.hpp"
-#include <algorithm>
 #include <memory>
+#include "FirstMenu.hpp"
 #include "Logger.hpp"
 #include "PathResolver.hpp"
 
