@@ -7,7 +7,7 @@
 |   Connect to a pending game:       -->                                    |
 |   {                                 |                                     |
 |    "type": "join",                  |                                     |
-|    "roomName": "<someValue>"        |                                     |
+|    "roomName": "<roomName>"         |                                     |
 |   }                                 |                                     |
 |                                     |                                     |
 |                                    <--  Send connect ok with information  |
@@ -15,20 +15,16 @@
 |                                     |    "type": "join",                  |
 |                                     |    "success": true                  |
 |                                     |   }                                 |
-|                                     |                                     |
-|                                     |                                     |
 | ----------------------------------- | ----------------------------------- |
+|   Create a game                    -->                                    |
+|   {                                 |                                     |
+|    "type": "create"                 |                                     |
+|   }                                 |                                     |
 |                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
+|                                    <--  Send roomName                     |
+|                                     |   {                                 |
+|                                     |    "type": "create",                |
+|                                     |    "roomName": "<roomName>"         |
+|                                     |   }                                 |
 | ----------------------------------- | ----------------------------------- |
 ```

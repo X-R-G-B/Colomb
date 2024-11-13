@@ -55,9 +55,9 @@ void Network::update()
             case ENET_EVENT_TYPE_CONNECT:
                 Logger::debug("NETWORK: client connected");
                 {
-                    auto id         = enet_peer_to_id(event.peer);
-                    auto peer       = std::make_shared<Peer>(id, event.peer);
-                    _packets.at(id) = std::make_pair(peer, std::queue<std::string>());
+                    auto id      = enet_peer_to_id(event.peer);
+                    auto peer    = std::make_shared<Peer>(id, event.peer);
+                    _packets[id] = std::make_pair(peer, std::queue<std::string>());
                     _onNewPeer(peer);
                 }
                 event.peer->data = nullptr;
@@ -67,7 +67,7 @@ void Network::update()
                 {
                     auto id      = enet_peer_to_id(event.peer);
                     auto message = Archive::decompress(event.packet->data, event.packet->dataLength);
-                    _packets.at(id).second.push(message);
+                    _packets[id].second.push(message);
                 }
                 enet_packet_destroy(event.packet);
                 break;
@@ -75,10 +75,20 @@ void Network::update()
                 Logger::warn("NETWORK: client disconnected");
                 {
                     auto id = enet_peer_to_id(event.peer);
-                    _onDisconnectPeer(_packets.at(id).first);
+                    _onDisconnectPeer(_packets[id].first);
                     _packets.erase(id);
                 }
                 break;
+            case ENET_EVENT_TYPE_DISCONNECT_TIMEOUT:
+                // TODO: maybe not disconnect/erase because the peer will connect again
+                Logger::warn("NETWORK: client disconnected timeout");
+                {
+                    auto id = enet_peer_to_id(event.peer);
+                    _onDisconnectPeer(_packets[id].first);
+                    _packets.erase(id);
+                }
+                break;
+
             default: Logger::error("NETWORK: unknow event type: " + std::to_string(event.type)); break;
         }
     }
@@ -102,7 +112,7 @@ bool Network::hasPacket(std::shared_ptr<IPeer> peer)
 {
     auto peer_ = std::static_pointer_cast<Peer>(peer);
     if (_packets.contains(peer_->getId())) {
-        return !_packets.at(peer_->getId()).second.empty();
+        return !_packets[peer_->getId()].second.empty();
     }
     return false;
 }
@@ -110,8 +120,8 @@ bool Network::hasPacket(std::shared_ptr<IPeer> peer)
 nlohmann::json Network::receive(std::shared_ptr<IPeer> peer)
 {
     auto peer_         = std::static_pointer_cast<Peer>(peer);
-    std::string packet = _packets.at(peer_->getId()).second.front();
-    _packets.at(peer_->getId()).second.pop();
+    std::string packet = _packets[peer_->getId()].second.front();
+    _packets[peer_->getId()].second.pop();
     return nlohmann::json(packet);
 }
 

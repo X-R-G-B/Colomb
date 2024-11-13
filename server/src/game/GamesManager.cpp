@@ -27,7 +27,7 @@ GamesManager &GamesManager::GetInstance()
 
 void GamesManager::onNewPeer(std::shared_ptr<INetwork::IPeer> peer)
 {
-    _globalLobby.at(peer->getId()) = peer;
+    _globalLobby[peer->getId()] = peer;
 }
 
 void GamesManager::onDisconnectPeer(std::shared_ptr<INetwork::IPeer> peer)
@@ -62,6 +62,13 @@ void GamesManager::update()
                     };
                     network.send(peer, r);
                 }
+            } else if (message["type"] == "create") {
+                auto roomName = this->createGame();
+                nlohmann::json r = {
+                    {"type", "create"},
+                    {"roomName", roomName},
+                };
+                network.send(peer, r);
             } else {
                 Logger::warn("GAMESMANAGER: unknow messageType");
             }
@@ -93,7 +100,7 @@ std::string GamesManager::createGame()
     while (_games.contains(newGameName)) {
         newGameName = generateRandomRoomName();
     }
-    _games.at(newGameName) = std::make_shared<Game>();
+    _games[newGameName] = std::make_shared<Game>();
     return newGameName;
 }
 
@@ -106,6 +113,6 @@ bool GamesManager::connectPeer(const std::string &roomName, std::shared_ptr<INet
         return false;
     }
     _globalLobby.erase(peer->getId());
-    _games.at(roomName)->addPeer(peer);
+    _games[roomName]->addPeer(peer);
     return true;
 }
