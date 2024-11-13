@@ -1,2 +1,2 @@
-# Colomb
+# Colomb Client
 A game
