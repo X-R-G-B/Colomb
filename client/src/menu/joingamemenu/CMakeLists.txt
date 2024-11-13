@@ -9,9 +9,5 @@ target_include_directories(
 target_sources(
     ${PROJECT_NAME}
     PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/MenusManager.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/MenuState.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/JoinGameMenu.cpp
 )
-
-add_subdirectory(firstmenu)
-add_subdirectory(joingamemenu)

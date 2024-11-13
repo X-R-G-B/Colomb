@@ -1,14 +1,18 @@
 #include "Button.hpp"
 
-Button::Button(raylib::Vector2 position, std::string texture, std::string text)
+Button::Button(raylib::Vector2 position, const std::string &texture, const std::string &text, bool clickable)
     : _position(position),
-      _texture(texture)
+      _texture(texture),
+      _clickable(clickable)
 {
     _text.text = text;
 }
 
 bool Button::isClicked(raylib::Window &window) const
 {
+    if (!_clickable) {
+        return false;
+    }
     if (!window.IsFocused()) {
         return false;
     }
@@ -26,13 +30,19 @@ bool Button::isClicked(raylib::Window &window) const
     return true;
 }
 
-void Button::draw(raylib::Window & /*unused*/) const
+void Button::draw(raylib::Window &window) const
 {
+    if (!window.IsFocused()) {
+        return;
+    }
     _texture.Draw(_position);
     const auto size_text = _text.MeasureEx();
     auto pos_text        = _position;
-    pos_text.SetX(pos_text.GetX() + (size_text.GetX() / 2));
-    pos_text.SetY(pos_text.GetY() + (size_text.GetY() / 2));
+    const auto texture_size = _texture.GetSize();
+    pos_text.SetX(pos_text.GetX() + (texture_size.x / 2));
+    pos_text.SetY(pos_text.GetY() + (texture_size.y / 2));
+    pos_text.SetX(pos_text.GetX() - (size_text.GetX() / 2));
+    pos_text.SetY(pos_text.GetY() - (size_text.GetY() / 2));
     _text.Draw(pos_text);
 }
 
@@ -52,4 +62,9 @@ void Button::setPosition(raylib::Vector2 position)
 const raylib::Texture &Button::getTexture() const
 {
     return _texture;
+}
+
+void Button::setClickable(bool clickable)
+{
+    _clickable = clickable;
 }

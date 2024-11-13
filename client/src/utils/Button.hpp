@@ -1,18 +1,17 @@
 #pragma once
 
-#include <list>
 #include <string>
-#include <vector>
 #include "raylib-cpp.hpp"
 
 class Button {
     public:
-        Button(raylib::Vector2 position, std::string texture, std::string text);
+        Button(raylib::Vector2 position, const std::string &texture, const std::string &text, bool clickable);
 
         bool isClicked(raylib::Window &window) const;
         void draw(raylib::Window &window) const;
         void setPosition(raylib::Vector2 position);
         const raylib::Texture &getTexture() const;
+        void setClickable(bool clickable);
 
         Button &operator=(const Button &src);
 
@@ -20,4 +19,5 @@ class Button {
         raylib::Vector2 _position;
         raylib::Texture _texture;
         raylib::Text _text;
+        bool _clickable;
 };

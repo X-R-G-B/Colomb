@@ -19,6 +19,7 @@ class Network : public INetwork {
         bool send(const nlohmann::json &data) override;
         bool hasPacket() override;
         nlohmann::json receive() override;
+        bool isConnected() override;
 
     private:
         bool _initialized = false;

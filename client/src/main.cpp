@@ -1,5 +1,5 @@
 #include "raylib-cpp.hpp"
-#include "FirstMenu.hpp"
+#include "MenusManager.hpp"
 #include "INetwork.hpp"
 #include "ResourcesManager.hpp"
 
@@ -15,15 +15,15 @@ int main(int /*unused*/, const char **av)
     window.SetTargetFPS(60);
 
     network.init(SERVER_URL, SERVER_PORT);
-    auto firstmenu = FirstMenu(window);
+    auto menus = MenusManager(window);
     while (!window.ShouldClose()) {
         network.update();
-        firstmenu.update(window);
+        menus.update(window);
         window.BeginDrawing();
         window.ClearBackground(raylib::Color::White());
-        firstmenu.draw(window);
+        menus.draw(window);
         window.EndDrawing();
     }
-    firstmenu.free(window);
+    menus.free(window);
     return 0;
 }
