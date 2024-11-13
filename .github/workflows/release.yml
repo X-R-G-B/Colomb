@@ -127,7 +127,7 @@ jobs:
     - name: Install deps
       run: sudo apt-get update && sudo apt-get install -y tar git curl
 
-    - name: Get Date
+    - name: Get Enet
       run: |
         mkdir enet-repo
         mkdir enet-repo/include
@@ -381,19 +381,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload ${{ needs.release-create.outputs.release }} ./client/Colomb_server-linux.tar.gz
-          gh release upload ${{ needs.release-create.outputs.release }} ./client/Colomb_server-linux.sh
+          gh release upload ${{ needs.release-create.outputs.release }} ./server/Colomb_server-linux.tar.gz
+          gh release upload ${{ needs.release-create.outputs.release }} ./server/Colomb_server-linux.sh
 
       - name: Upload To Artifact
         if: github.ref != 'refs/heads/main'
         uses: actions/upload-artifact@v3
         with:
           name: Colomb_server-linux.tar.gz
-          path: ./client/Colomb_server-linux.tar.gz
+          path: ./server/Colomb_server-linux.tar.gz
 
       - name: Upload To Artifact
         if: github.ref != 'refs/heads/main'
         uses: actions/upload-artifact@v3
         with:
           name: Colomb_server-linux.sh
-          path: ./client/Colomb_server-linux.sh
+          path: ./server/Colomb_server-linux.sh

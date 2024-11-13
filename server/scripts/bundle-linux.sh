@@ -13,8 +13,8 @@ cd build || exit 14
 
 cpack --config CPackConfig.cmake -G STGZ
 
-mv Colomb-Linux.sh ../Colomb-linux.sh
+mv Colomb_server-Linux.sh ../Colomb_server-linux.sh
 
 cpack --config CPackSourceConfig.cmake -G TGZ
 
-mv Colomb-Linux.tar.gz ../Colomb-linux.tar.gz
+mv Colomb_server-Linux.tar.gz ../Colomb_server-linux.tar.gz
