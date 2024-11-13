@@ -8,8 +8,11 @@
 FirstMenu::FirstMenu(raylib::Window &window) : _icon(PathResolver::resolve("assets/icons/favicon.png"))
 {
     // button play
-    _buttons["play"] =
-        std::make_unique<Button>(raylib::Vector2(0, 0), PathResolver::resolve("assets/icons/play.png"), "", false);
+    _buttons["play"] = std::make_unique<Button>(
+        raylib::Vector2(0, 0),
+        PathResolver::resolve("assets/icons/play.png"),
+        "",
+        false);
     const auto sizeButtonPlay = _buttons["play"]->getTexture().GetSize();
     _buttons["play"]->setPosition(raylib::Vector2(
         window.GetWidth() / 2.0 - sizeButtonPlay.x / 2,

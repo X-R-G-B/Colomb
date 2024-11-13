@@ -5,7 +5,12 @@
 
 class TextEntry {
     public:
-        TextEntry(raylib::Vector2 position, raylib::Vector2 size, raylib::Color bgColor, raylib::Color fgColor, int fgSize);
+        TextEntry(
+            raylib::Vector2 position,
+            raylib::Vector2 size,
+            raylib::Color bgColor,
+            raylib::Color fgColor,
+            int fgSize);
 
         std::string &text();
         void update(raylib::Window &window);

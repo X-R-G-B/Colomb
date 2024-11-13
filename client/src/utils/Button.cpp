@@ -1,6 +1,10 @@
 #include "Button.hpp"
 
-Button::Button(raylib::Vector2 position, const std::string &texture, const std::string &text, bool clickable)
+Button::Button(
+    raylib::Vector2 position,
+    const std::string &texture,
+    const std::string &text,
+    bool clickable)
     : _position(position),
       _texture(texture),
       _clickable(clickable)
@@ -36,8 +40,8 @@ void Button::draw(raylib::Window &window) const
         return;
     }
     _texture.Draw(_position);
-    const auto size_text = _text.MeasureEx();
-    auto pos_text        = _position;
+    const auto size_text    = _text.MeasureEx();
+    auto pos_text           = _position;
     const auto texture_size = _texture.GetSize();
     pos_text.SetX(pos_text.GetX() + (texture_size.x / 2));
     pos_text.SetY(pos_text.GetY() + (texture_size.y / 2));

@@ -5,7 +5,11 @@
 
 class Button {
     public:
-        Button(raylib::Vector2 position, const std::string &texture, const std::string &text, bool clickable);
+        Button(
+            raylib::Vector2 position,
+            const std::string &texture,
+            const std::string &text,
+            bool clickable);
 
         bool isClicked(raylib::Window &window) const;
         void draw(raylib::Window &window) const;

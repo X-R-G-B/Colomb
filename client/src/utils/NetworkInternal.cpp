@@ -15,14 +15,9 @@ Network::~Network()
         enet_peer_disconnect(_server, 0);
         while (enet_host_service(_client, &event, 3000) > 0) {
             switch (event.type) {
-                case ENET_EVENT_TYPE_RECEIVE:
-                    enet_packet_destroy (event.packet);
-                    break;
-                case ENET_EVENT_TYPE_DISCONNECT:
-                    puts ("Disconnection succeeded.");
-                    return;
-                default:
-                    break;
+                case ENET_EVENT_TYPE_RECEIVE: enet_packet_destroy(event.packet); break;
+                case ENET_EVENT_TYPE_DISCONNECT: puts("Disconnection succeeded."); return;
+                default: break;
             }
         }
         enet_peer_reset(_server);

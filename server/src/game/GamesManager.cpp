@@ -63,9 +63,9 @@ void GamesManager::update()
                     network.send(peer, r);
                 }
             } else if (message["type"] == "create") {
-                auto roomName = this->createGame();
+                auto roomName    = this->createGame();
                 nlohmann::json r = {
-                    {"type", "create"},
+                    {"type",     "create"},
                     {"roomName", roomName},
                 };
                 network.send(peer, r);

@@ -1,6 +1,6 @@
 #include "raylib-cpp.hpp"
-#include "MenusManager.hpp"
 #include "INetwork.hpp"
+#include "MenusManager.hpp"
 #include "ResourcesManager.hpp"
 
 int main(int /*unused*/, const char **av)

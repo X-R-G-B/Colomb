@@ -2,10 +2,15 @@
 #include "raylib.h"
 #include "Keyboard.hpp"
 
-TextEntry::TextEntry(raylib::Vector2 position, raylib::Vector2 size, raylib::Color bgColor, raylib::Color fgColor, int fgSize):
-    _rect(position, size),
-    _bgColor(bgColor),
-    _fgColor(fgColor)
+TextEntry::TextEntry(
+    raylib::Vector2 position,
+    raylib::Vector2 size,
+    raylib::Color bgColor,
+    raylib::Color fgColor,
+    int fgSize)
+    : _rect(position, size),
+      _bgColor(bgColor),
+      _fgColor(fgColor)
 {
     _text.text = "";
     _text.SetColor(fgColor);
@@ -23,7 +28,7 @@ void TextEntry::update(raylib::Window &window)
         return;
     }
     if (raylib::Mouse::IsButtonPressed(MOUSE_BUTTON_LEFT)) {
-        const auto pos      = raylib::Mouse::GetPosition();
+        const auto pos = raylib::Mouse::GetPosition();
         if (_rect.CheckCollision(pos)) {
             if (_isFocused == false) {
                 _isFocused = true;
@@ -37,7 +42,7 @@ void TextEntry::update(raylib::Window &window)
     if (!_isFocused) {
         return;
     }
-    
+
     auto c = GetCharPressed();
     while (c != 0) {
         if ((c >= 32) && (c <= 125)) {
@@ -59,8 +64,8 @@ void TextEntry::draw(raylib::Window &window) const
     }
     _rect.Draw(_bgColor);
 
-    const auto size_text = _text.MeasureEx();
-    auto pos_text        = _rect.GetPosition();
+    const auto size_text    = _text.MeasureEx();
+    auto pos_text           = _rect.GetPosition();
     const auto texture_size = _rect.GetSize();
     pos_text.SetX(pos_text.GetX() + (texture_size.x / 2));
     pos_text.SetY(pos_text.GetY() + (texture_size.y / 2));
@@ -76,10 +81,10 @@ void TextEntry::setPosition(raylib::Vector2 position)
 
 TextEntry &TextEntry::operator=(const TextEntry &src)
 {
-    _rect = src._rect;
-    _text.text = src._text.text;
+    _rect       = src._rect;
+    _text.text  = src._text.text;
     _text.color = src._text.color;
-    _bgColor = src._bgColor;
+    _bgColor    = src._bgColor;
     return *this;
 }
 
