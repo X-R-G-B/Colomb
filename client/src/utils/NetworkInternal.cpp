@@ -2,6 +2,7 @@
 #include "NetworkInternal.hpp"
 #include "Logger.hpp"
 #include "enet.h"
+#include "Archive.hpp"
 
 Network::Network()
 {
@@ -49,7 +50,10 @@ void Network::update()
                 break;
             case ENET_EVENT_TYPE_RECEIVE:
                 Logger::debug("NETWORK: receive data");
-                _packets.push(std::string(reinterpret_cast<char *>(event.packet->data)));
+                {
+                    auto message = Archive::decompress(event.packet->data, event.packet->dataLength);
+                    _packets.push(message);
+                }
                 enet_packet_destroy(event.packet);
                 break;
             case ENET_EVENT_TYPE_DISCONNECT: Logger::warn("NETWORK: connection closed"); break;
@@ -58,9 +62,11 @@ void Network::update()
     }
 }
 
-bool Network::send(const std::string &text)
+bool Network::send(const nlohmann::json &data)
 {
-    ENetPacket *packet = enet_packet_create(text.data(), text.length() + 1, ENET_PACKET_FLAG_RELIABLE);
+    const auto text = data.dump();
+    const auto textCompressed = Archive::compress(text);
+    ENetPacket *packet = enet_packet_create(textCompressed.data(), textCompressed.size(), ENET_PACKET_FLAG_RELIABLE);
     if (packet == nullptr) {
         return false;
     }
@@ -73,9 +79,9 @@ bool Network::hasPacket()
     return !_packets.empty();
 }
 
-std::string Network::receive()
+nlohmann::json Network::receive()
 {
     std::string packet = _packets.front();
     _packets.pop();
-    return packet;
+    return nlohmann::json(packet);
 }

@@ -1,5 +1,5 @@
 #include <memory>
-#include <sstream>
+#include "Archive.hpp"
 #define ENET_IMPLEMENTATION
 #include "Logger.hpp"
 #include "NetworkInternal.hpp"
@@ -66,7 +66,7 @@ void Network::update()
                 Logger::debug("NETWORK: receive data");
                 {
                     auto id      = enet_peer_to_id(event.peer);
-                    auto message = std::string(reinterpret_cast<char *>(event.packet->data));
+                    auto message = Archive::decompress(event.packet->data, event.packet->dataLength);
                     _packets.at(id).second.push(message);
                 }
                 enet_packet_destroy(event.packet);
@@ -84,10 +84,13 @@ void Network::update()
     }
 }
 
-bool Network::send(std::shared_ptr<IPeer> peer, const std::string &text)
+bool Network::send(std::shared_ptr<IPeer> peer, const nlohmann::json &data)
 {
-    auto peer_         = std::static_pointer_cast<Peer>(peer);
-    ENetPacket *packet = enet_packet_create(text.data(), text.length() + 1, ENET_PACKET_FLAG_RELIABLE);
+    auto peer_                = std::static_pointer_cast<Peer>(peer);
+    const auto text           = data.dump();
+    const auto textCompressed = Archive::compress(text);
+    ENetPacket *packet =
+        enet_packet_create(textCompressed.data(), textCompressed.size(), ENET_PACKET_FLAG_RELIABLE);
     if (packet == nullptr) {
         return false;
     }
@@ -104,12 +107,12 @@ bool Network::hasPacket(std::shared_ptr<IPeer> peer)
     return false;
 }
 
-std::string Network::receive(std::shared_ptr<IPeer> peer)
+nlohmann::json Network::receive(std::shared_ptr<IPeer> peer)
 {
     auto peer_         = std::static_pointer_cast<Peer>(peer);
     std::string packet = _packets.at(peer_->getId()).second.front();
     _packets.at(peer_->getId()).second.pop();
-    return packet;
+    return nlohmann::json(packet);
 }
 
 Network::Peer::Peer(const std::string &id, ENetPeer *peer) : _id(id), _peer(peer)

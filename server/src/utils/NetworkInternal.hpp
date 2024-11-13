@@ -34,9 +34,9 @@ class Network : public INetwork {
 
         bool init(OnNewPeerFn onNewPeer, OnDisconnectPeerFn onDisconnectPeer) override;
         void update() override;
-        bool send(std::shared_ptr<IPeer> peer, const std::string &text) override;
+        bool send(std::shared_ptr<IPeer> peer, const nlohmann::json &data) override;
         bool hasPacket(std::shared_ptr<IPeer> peer) override;
-        std::string receive(std::shared_ptr<IPeer> peer) override;
+        nlohmann::json receive(std::shared_ptr<IPeer> peer) override;
 
     private:
         bool _initialized = false;

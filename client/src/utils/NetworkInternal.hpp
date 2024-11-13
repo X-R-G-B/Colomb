@@ -16,9 +16,9 @@ class Network : public INetwork {
 
         bool init(const std::string &url, const unsigned int port) override;
         void update() override;
-        bool send(const std::string &text) override;
+        bool send(const nlohmann::json &data) override;
         bool hasPacket() override;
-        std::string receive() override;
+        nlohmann::json receive() override;
 
     private:
         bool _initialized = false;

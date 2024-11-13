@@ -5,7 +5,7 @@
 #include <vector>
 #include "INetwork.hpp"
 #include "Logger.hpp"
-#include "rapidjson/document.h"
+#include "nlohmann/json.hpp"
 
 GamesManager::GamesManager()
 {
@@ -48,19 +48,19 @@ void GamesManager::update()
     for (auto &[key, peer] : _globalLobby) {
         while (network.hasPacket(peer)) {
             const auto message = network.receive(peer);
-            rapidjson::Document d;
-            d.Parse(message.data());
-            if (d.HasParseError()) {
-                Logger::error("GAMESMANAGER: can't parse text");
-                continue;
-            }
-            rapidjson::Value &messageType = d["type"];
-            if (std::string(messageType.GetString()) == "join") {
-                rapidjson::Value &roomName = d["roomName"];
-                if (this->connectPeer(std::string(roomName.GetString()), peer)) {
-                    network.send(peer, "{\"type\":\"join\",\"success\":true}");
+            if (message["type"] == "join") {
+                if (this->connectPeer(message["roomName"], peer)) {
+                    nlohmann::json r = {
+                        {"type",    "join"},
+                        {"success", true  },
+                    };
+                    network.send(peer, r);
                 } else {
-                    network.send(peer, "{\"type\":\"join\",\"success\":false}");
+                    nlohmann::json r = {
+                        {"type",    "join"},
+                        {"success", false },
+                    };
+                    network.send(peer, r);
                 }
             } else {
                 Logger::warn("GAMESMANAGER: unknow messageType");

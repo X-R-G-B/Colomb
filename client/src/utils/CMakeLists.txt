@@ -12,4 +12,5 @@ target_sources(
     ${CMAKE_CURRENT_SOURCE_DIR}/Button.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/INetwork.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/NetworkInternal.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Archive.cpp
 )
