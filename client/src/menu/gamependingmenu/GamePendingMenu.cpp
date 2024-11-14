@@ -2,7 +2,7 @@
 #include <memory>
 #include "GlobalValues.hpp"
 
-GamePendingMenu::GamePendingMenu(raylib::Window &window): _participants(window)
+GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
 {
     const auto win_size   = window.GetSize();
     const auto middle     = win_size.Divide(2);

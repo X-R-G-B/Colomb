@@ -3,8 +3,8 @@
 #include <memory>
 #include <unordered_map>
 #include "raylib-cpp.hpp"
-#include "TextEntry.hpp"
 #include "Button.hpp"
+#include "TextEntry.hpp"
 
 class Participants {
     public:
