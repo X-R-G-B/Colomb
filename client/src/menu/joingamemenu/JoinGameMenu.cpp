@@ -1,15 +1,15 @@
 #include <memory>
 
+#include "INetwork.hpp"
 #include "JoinGameMenu.hpp"
 #include "Logger.hpp"
 #include "PathResolver.hpp"
 #include "TextEntry.hpp"
-#include "INetwork.hpp"
 
 JoinGameMenu::JoinGameMenu(raylib::Window &window)
 {
-    const auto win_size = window.GetSize();
-    const auto middle = win_size.Divide(2);
+    const auto win_size   = window.GetSize();
+    const auto middle     = win_size.Divide(2);
     const auto mid_middle = middle.Divide(2);
 
     // ------------------- Join Room
@@ -83,7 +83,7 @@ void JoinGameMenu::update(raylib::Window &window)
     if (_buttons["connecting"]->isClicked(window)) {
         Logger::debug("TEST:" + _textEntries["roomName"]->text());
         network.send({
-            {"type", "join"},
+            {"type",     "join"                          },
             {"roomName", _textEntries["roomName"]->text()},
         });
     }

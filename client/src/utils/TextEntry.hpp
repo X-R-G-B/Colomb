@@ -10,9 +10,9 @@ class TextEntry {
             raylib::Vector2 size,
             raylib::Color bgColor = raylib::Color::Black(),
             raylib::Color fgColor = raylib::Color::White(),
-            int fgSize = 10,
-            float fgSpacing = 2,
-            int maxSize = 0);
+            int fgSize            = 10,
+            float fgSpacing       = 2,
+            int maxSize           = 0);
 
         std::string &text();
         void update(raylib::Window &window);
