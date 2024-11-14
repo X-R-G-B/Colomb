@@ -26,19 +26,19 @@ std::string &TextEntry::text()
     return _text.text;
 }
 
-bool TextEntry::isClicked(raylib::Window &window)
+TextEntry::ClickedState TextEntry::isClicked(raylib::Window &window)
 {
     if (!window.IsFocused()) {
-        return false;
+        return ButtonNotPressed;
     }
     if (!raylib::Mouse::IsButtonPressed(MOUSE_BUTTON_LEFT)) {
-        return false;
+        return ButtonNotPressed;
     }
     const auto pos = raylib::Mouse::GetPosition();
     if (!_rect.CheckCollision(pos)) {
-        return false;
+        return ClickedOutside;
     }
-    return true;
+    return ClickedInside;
 }
 
 void TextEntry::update(raylib::Window &window)
@@ -46,16 +46,20 @@ void TextEntry::update(raylib::Window &window)
     if (_isReadonly) {
         return;
     }
-    if (this->isClicked(window)) {
-        if (_isFocused == false) {
-            _isFocused = true;
-        }
-    } else {
-        if (_isFocused == true) {
-            _isFocused = false;
-        }
+    switch (this->isClicked(window)) {
+        case ClickedInside:
+            if (_isFocused == false) {
+                _isFocused = true;
+            }
+            break;
+        case ClickedOutside:
+            if (_isFocused == true) {
+                _isFocused = false;
+            }
+            break;
+        default: break;
     }
-    if (!_isFocused) {
+    if (!window.IsFocused() || !_isFocused) {
         return;
     }
 
@@ -93,6 +97,11 @@ void TextEntry::draw(raylib::Window &window) const
 void TextEntry::setPosition(raylib::Vector2 position)
 {
     _rect.SetPosition(position);
+}
+
+void TextEntry::setBgColor(const raylib::Color &color)
+{
+    _bgColor = color;
 }
 
 TextEntry &TextEntry::operator=(const TextEntry &src)

@@ -1,7 +1,7 @@
+#include "FrameRateLimit.hpp"
 #include "GamesManager.hpp"
 #include "Logger.hpp"
 #include "ResourcesManager.hpp"
-#include "FrameRateLimit.hpp"
 
 int main(int /*unused*/, const char **av)
 {
@@ -16,7 +16,6 @@ int main(int /*unused*/, const char **av)
     gamesManager;
     while (true) {
         gamesManager.update();
-        Logger::debug("test1");
         frl.sleep();
     }
     return 0;

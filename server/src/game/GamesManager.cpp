@@ -48,38 +48,54 @@ void GamesManager::update()
     for (auto &[key, peer] : _globalLobby) {
         while (network.hasPacket(peer)) {
             const auto message = network.receive(peer);
+            if (!message.contains("type") || !message.at("type").is_string()) {
+                continue;
+            }
             const auto messageType = message.at("type").template get<std::string>();
             if (messageType == "join") {
+                if (!message.contains("roomName") || !message.contains("username")
+                    || !message.at("roomName").is_string() || !message.at("username").is_string()) {
+                    continue;
+                }
                 const auto roomName = message.at("roomName").template get<std::string>();
-                if (this->connectPeer(roomName, peer)) {
-                    nlohmann::json r = {
-                        {"type",    "join"},
-                        {"success", true  },
-                        {"roomName", roomName}
-                    };
-                    network.send(peer, r);
+                const auto username = message.at("username").template get<std::string>();
+                if (this->connectPeer(roomName, peer, username)) {
+                    network.send(
+                        peer,
+                        {
+                            {"type",     "join"  },
+                            {"success",  true    },
+                            {"roomName", roomName}
+                    });
                 } else {
-                    nlohmann::json r = {
-                        {"type",    "join"},
-                        {"success", false },
-                    };
-                    network.send(peer, r);
+                    network.send(
+                        peer,
+                        {
+                            {"type",    "join"},
+                            {"success", false },
+                    });
                 }
             } else if (messageType == "create") {
-                auto roomName    = this->createGame();
-                if (this->connectPeer(roomName, peer)) {
-                    nlohmann::json r = {
-                        {"type",     "create"},
-                        {"success", true},
-                        {"roomName", roomName},
-                    };
-                    network.send(peer, r);
+                if (!message.contains("username") || !message.at("username").is_string()) {
+                    continue;
+                }
+                const auto username = message.at("username").template get<std::string>();
+                const auto roomName = this->createGame();
+                if (this->connectPeer(roomName, peer, username)) {
+                    network.send(
+                        peer,
+                        {
+                            {"type",     "create"},
+                            {"success",  true    },
+                            {"roomName", roomName},
+                    });
                 } else {
-                    nlohmann::json r = {
-                        {"type",     "create"},
-                        {"success", false},
-                    };
-                    network.send(peer, r);
+                    network.send(
+                        peer,
+                        {
+                            {"type",    "create"},
+                            {"success", false   },
+                    });
                 }
             } else {
                 Logger::warn("GAMESMANAGER: unknow messageType");
@@ -95,6 +111,10 @@ void GamesManager::update()
     for (const auto &key : removeGame) {
         _games.erase(key);
     }
+    for (const auto &key : _toRemoveGlobalClient) {
+        _globalLobby.erase(key);
+    }
+    _toRemoveGlobalClient.clear();
 }
 
 static std::string generateRandomRoomName()
@@ -116,15 +136,23 @@ std::string GamesManager::createGame()
     return newGameName;
 }
 
-bool GamesManager::connectPeer(const std::string &roomName, std::shared_ptr<INetwork::IPeer> peer)
+bool GamesManager::connectPeer(
+    const std::string &roomName,
+    std::shared_ptr<INetwork::IPeer> peer,
+    const std::string &username)
 {
+    std::string usernameModif(username);
+
     if (!_globalLobby.contains(peer->getId())) {
         return false;
     }
     if (!_games.contains(roomName)) {
         return false;
     }
-    _globalLobby.erase(peer->getId());
-    _games[roomName]->addPeer(peer);
+    if (usernameModif.length() > 15) {
+        usernameModif.resize(15);
+    }
+    _toRemoveGlobalClient.push_back(peer->getId());
+    _games[roomName]->addPeer(peer, usernameModif);
     return true;
 }

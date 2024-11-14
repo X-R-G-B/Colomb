@@ -14,6 +14,35 @@ JoinGameMenu::JoinGameMenu(raylib::Window &window)
     const auto middle     = win_size.Divide(2);
     const auto mid_middle = middle.Divide(2);
 
+    // ------ username
+    // text
+    _textEntries["username_text"] = std::make_unique<TextEntry>(
+        raylib::Vector2(0, 0),
+        raylib::Vector2(100, 50),
+        raylib::Color::White(),
+        raylib::Color::Black(),
+        20,
+        2.5,
+        10);
+    const auto sizeTextUsername = _textEntries["username_text"]->getRect().GetSize();
+    _textEntries["username_text"]->setPosition(raylib::Vector2(
+        middle.x - sizeTextUsername.x / 2,
+        middle.y - (sizeTextUsername.y / 2) - mid_middle.y));
+    _textEntries["username_text"]->setReadonly(true);
+    _textEntries["username_text"]->text().assign("Username:");
+    // entry
+    _textEntries["username"] = std::make_unique<TextEntry>(
+        raylib::Vector2(0, 0),
+        raylib::Vector2(100, 50),
+        raylib::Color::Black(),
+        raylib::Color::White(),
+        20,
+        2.5,
+        15);
+    const auto sizeTextEntryUsername = _textEntries["username"]->getRect().GetSize();
+    _textEntries["username"]->setPosition(raylib::Vector2(
+        middle.x - sizeTextEntryUsername.x / 2,
+        middle.y - mid_middle.y + (sizeTextUsername.y / 2) + 10));
     // ------------------- Join Room
     _textEntries["join_text"] = std::make_unique<TextEntry>(
         raylib::Vector2(0, 0),
@@ -82,6 +111,7 @@ JoinGameMenu::JoinGameMenu(raylib::Window &window)
 void JoinGameMenu::update(raylib::Window &window)
 {
     _textEntries["roomName"]->update(window);
+    _textEntries["username"]->update(window);
     if (network.hasPacket()) {
         const auto message     = network.receive();
         const auto messageType = message.at("type").template get<std::string>();
@@ -110,17 +140,27 @@ void JoinGameMenu::update(raylib::Window &window)
         }
     }
     if (_buttons["connecting"]->isClicked(window)) {
-        Logger::debug("TEST:" + _textEntries["roomName"]->text());
-        network.send({
-            {"type",     "join"                          },
-            {"roomName", _textEntries["roomName"]->text()},
-        });
+        if (_textEntries["username"]->text().length() != 0) {
+            _textEntries["username"]->setBgColor(raylib::Color::Black());
+            network.send({
+                {"type",     "join"                          },
+                {"username", _textEntries["username"]->text()},
+                {"roomName", _textEntries["roomName"]->text()},
+            });
+        } else {
+            _textEntries["username"]->setBgColor(raylib::Color::DarkGray());
+        }
     }
     if (_buttons["create"]->isClicked(window)) {
-        Logger::debug("TEST: create");
-        network.send({
-            {"type", "create"},
-        });
+        if (_textEntries["username"]->text().length() != 0) {
+            _textEntries["username"]->setBgColor(raylib::Color::Black());
+            network.send({
+                {"type",     "create"                        },
+                {"username", _textEntries["username"]->text()},
+            });
+        } else {
+            _textEntries["username"]->setBgColor(raylib::Color::DarkGray());
+        }
     }
 }
 
@@ -131,6 +171,8 @@ void JoinGameMenu::draw(raylib::Window &window)
     _textEntries["join_text"]->draw(window);
     _buttons["create"]->draw(window);
     _textEntries["create_text"]->draw(window);
+    _textEntries["username_text"]->draw(window);
+    _textEntries["username"]->draw(window);
 }
 
 void JoinGameMenu::free(raylib::Window &window)

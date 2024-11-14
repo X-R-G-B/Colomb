@@ -20,8 +20,11 @@ int main(int /*unused*/, const char **av)
         network.update();
         menus.update(window);
         window.BeginDrawing();
-        window.ClearBackground(raylib::Color::White());
+        window.ClearBackground(raylib::Color::Gray());
         menus.draw(window);
+#ifndef NDEBUG
+        window.DrawFPS();
+#endif
         window.EndDrawing();
     }
     menus.free(window);

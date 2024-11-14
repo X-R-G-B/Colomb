@@ -5,6 +5,11 @@
 
 class TextEntry {
     public:
+        enum ClickedState {
+            ClickedOutside,
+            ClickedInside,
+            ButtonNotPressed,
+        };
         TextEntry(
             raylib::Vector2 position,
             raylib::Vector2 size,
@@ -18,9 +23,10 @@ class TextEntry {
         void update(raylib::Window &window);
         void draw(raylib::Window &window) const;
         void setPosition(raylib::Vector2 position);
+        void setBgColor(const raylib::Color &color);
         const raylib::Rectangle &getRect() const;
         void setReadonly(bool readOnly);
-        bool isClicked(raylib::Window &wndow);
+        ClickedState isClicked(raylib::Window &wndow);
 
         TextEntry &operator=(const TextEntry &src);
 

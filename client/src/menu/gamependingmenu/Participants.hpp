@@ -14,7 +14,16 @@ class Participants {
         void draw(raylib::Window &window);
         void free(raylib::Window &window);
 
+        void addParticipant(const std::string &username);
+        void clearParticipants(const std::string &username);
+        void removeParticipant(const std::string &username);
+
     private:
         std::unordered_map<std::string, std::unique_ptr<TextEntry>> _textEntries;
         std::unordered_map<std::string, std::unique_ptr<Button>> _buttons;
+
+        std::unordered_map<std::string, std::unique_ptr<TextEntry>> _textUsernames;
+        std::unordered_map<std::string, std::unique_ptr<Button>> _buttonsUsername;
+
+        std::vector<std::string> _usernames;
 };

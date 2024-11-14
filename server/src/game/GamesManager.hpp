@@ -21,8 +21,13 @@ class GamesManager {
         void onDisconnectPeer(std::shared_ptr<INetwork::IPeer> peer);
         GamesManager();
         std::string createGame();
-        bool connectPeer(const std::string &roomName, std::shared_ptr<INetwork::IPeer> peer);
+        bool connectPeer(
+            const std::string &roomName,
+            std::shared_ptr<INetwork::IPeer> peer,
+            const std::string &username);
 
         std::unordered_map<std::string, std::shared_ptr<INetwork::IPeer>> _globalLobby;
         std::unordered_map<std::string, std::shared_ptr<Game>> _games;
+
+        std::vector<std::string> _toRemoveGlobalClient;
 };

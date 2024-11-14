@@ -29,8 +29,43 @@ void Participants::update(raylib::Window &window)
 void Participants::draw(raylib::Window &window)
 {
     _textEntries["participants_text"]->draw(window);
+    for (const auto &user : _usernames) {
+        if (_buttonsUsername.contains(user)) {
+            _buttonsUsername[user]->draw(window);
+        }
+        if (_textUsernames.contains(user)) {
+            _textUsernames[user]->draw(window);
+        }
+    }
 }
 
 void Participants::free(raylib::Window &window)
 {
+}
+
+void Participants::addParticipant(const std::string &username)
+{
+}
+
+void Participants::removeParticipant(const std::string &username)
+{
+    _textUsernames.erase(username);
+    _buttonsUsername.erase(username);
+    int index = -1;
+    for (int i = 0; i < static_cast<int>(_usernames.size()); i++) {
+        if (_usernames[i] == username) {
+            index = i;
+            break;
+        }
+    }
+    if (index > 0 && index < (int) _usernames.size()) {
+        _usernames.erase(_usernames.begin() + index);
+    }
+}
+
+void Participants::clearParticipants(const std::string &username)
+{
+    _usernames.clear();
+    _textUsernames.clear();
+    _buttonsUsername.clear();
 }
