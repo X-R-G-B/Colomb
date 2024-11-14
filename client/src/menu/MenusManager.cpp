@@ -1,6 +1,8 @@
 #include "MenusManager.hpp"
 #include <memory>
 #include "FirstMenu.hpp"
+#include "GameMenu.hpp"
+#include "GamePendingMenu.hpp"
 #include "IMenu.hpp"
 #include "JoinGameMenu.hpp"
 #include "MenuState.hpp"
@@ -8,10 +10,14 @@
 static std::unique_ptr<IMenu> create_with_state(raylib::Window &window)
 {
     const auto state = menuState.getState();
-    if (state == "firstmenu") {
+    if (state == M_FIRSTMENU) {
         return std::make_unique<FirstMenu>(window);
-    } else if (state == "joingamemenu") {
+    } else if (state == M_JOINGAMEMENU) {
         return std::make_unique<JoinGameMenu>(window);
+    } else if (state == M_GAMEPENDIGMENU) {
+        return std::make_unique<GamePendingMenu>(window);
+    } else if (state == M_GAMEMENU) {
+        return std::make_unique<GameMenu>(window);
     } else {
         return std::make_unique<FirstMenu>(window);
     }

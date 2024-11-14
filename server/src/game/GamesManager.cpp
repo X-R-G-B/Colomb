@@ -50,10 +50,12 @@ void GamesManager::update()
             const auto message = network.receive(peer);
             const auto messageType = message.at("type").template get<std::string>();
             if (messageType == "join") {
-                if (this->connectPeer(message["roomName"], peer)) {
+                const auto roomName = message.at("roomName").template get<std::string>();
+                if (this->connectPeer(roomName, peer)) {
                     nlohmann::json r = {
                         {"type",    "join"},
                         {"success", true  },
+                        {"roomName", roomName}
                     };
                     network.send(peer, r);
                 } else {
@@ -65,11 +67,20 @@ void GamesManager::update()
                 }
             } else if (messageType == "create") {
                 auto roomName    = this->createGame();
-                nlohmann::json r = {
-                    {"type",     "create"},
-                    {"roomName", roomName},
-                };
-                network.send(peer, r);
+                if (this->connectPeer(roomName, peer)) {
+                    nlohmann::json r = {
+                        {"type",     "create"},
+                        {"success", true},
+                        {"roomName", roomName},
+                    };
+                    network.send(peer, r);
+                } else {
+                    nlohmann::json r = {
+                        {"type",     "create"},
+                        {"success", false},
+                    };
+                    network.send(peer, r);
+                }
             } else {
                 Logger::warn("GAMESMANAGER: unknow messageType");
             }

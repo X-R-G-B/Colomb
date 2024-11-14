@@ -12,6 +12,9 @@ Game::Game()
 
 void Game::update()
 {
+    if (_players.size() == 0) {
+        _isFinished = true;
+    }
 }
 
 bool Game::isFinished()

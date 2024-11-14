@@ -11,7 +11,10 @@ target_sources(
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/MenusManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MenuState.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GlobalValues.cpp
 )
 
 add_subdirectory(firstmenu)
 add_subdirectory(joingamemenu)
+add_subdirectory(gamemenu)
+add_subdirectory(gamependingmenu)

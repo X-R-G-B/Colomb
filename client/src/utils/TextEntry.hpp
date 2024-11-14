@@ -20,6 +20,7 @@ class TextEntry {
         void setPosition(raylib::Vector2 position);
         const raylib::Rectangle &getRect() const;
         void setReadonly(bool readOnly);
+        bool isClicked(raylib::Window &wndow);
 
         TextEntry &operator=(const TextEntry &src);
 

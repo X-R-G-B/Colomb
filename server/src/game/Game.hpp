@@ -11,6 +11,7 @@ class Game {
                 Player(std::shared_ptr<INetwork::IPeer> peer);
                 std::shared_ptr<INetwork::IPeer> _peer;
                 bool _isDisconnected = false;
+                bool _ready = false;
         };
         Game();
 

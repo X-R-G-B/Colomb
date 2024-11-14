@@ -35,7 +35,7 @@ void FirstMenu::update(raylib::Window &window)
         _buttons["play"]->setClickable(true);
     }
     if (_buttons["play"]->isClicked(window)) {
-        menuState.setState("joingamemenu");
+        menuState.setState(M_JOINGAMEMENU);
     }
 }
 

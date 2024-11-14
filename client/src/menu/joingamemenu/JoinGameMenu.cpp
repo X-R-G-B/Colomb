@@ -1,8 +1,10 @@
 #include <memory>
 
+#include "GlobalValues.hpp"
 #include "INetwork.hpp"
 #include "JoinGameMenu.hpp"
 #include "Logger.hpp"
+#include "MenuState.hpp"
 #include "PathResolver.hpp"
 #include "TextEntry.hpp"
 
@@ -80,6 +82,33 @@ JoinGameMenu::JoinGameMenu(raylib::Window &window)
 void JoinGameMenu::update(raylib::Window &window)
 {
     _textEntries["roomName"]->update(window);
+    if (network.hasPacket()) {
+        const auto message     = network.receive();
+        const auto messageType = message.at("type").template get<std::string>();
+        if (messageType == "join") {
+            const auto success = message.at("success").template get<bool>();
+            if (success) {
+                const auto roomName = message.at("roomName").template get<std::string>();
+                menuState.setState(M_GAMEPENDIGMENU);
+                globalValues._roomName = roomName;
+                return;
+            } else {
+                Logger::error("JOIN: got a success=false");
+                // TODO: show notif
+            }
+        } else if (messageType == "create") {
+            const auto success = message.at("success").template get<bool>();
+            if (success) {
+                const auto roomName    = message.at("roomName").template get<std::string>();
+                globalValues._roomName = roomName;
+                menuState.setState(M_GAMEPENDIGMENU);
+                return;
+            } else {
+                Logger::error("CREATE: got a success=false");
+                // TODO: show notif
+            }
+        }
+    }
     if (_buttons["connecting"]->isClicked(window)) {
         Logger::debug("TEST:" + _textEntries["roomName"]->text());
         network.send({

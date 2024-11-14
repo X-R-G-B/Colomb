@@ -3,6 +3,11 @@
 #include <string>
 #define menuState (MenuState::GetInstance())
 
+#define M_GAMEMENU       "gamemenu"
+#define M_FIRSTMENU      "firstmenu"
+#define M_JOINGAMEMENU   "joingamemenu"
+#define M_GAMEPENDIGMENU "gamependingmenu"
+
 class MenuState {
     public:
         static MenuState &GetInstance();
@@ -15,5 +20,5 @@ class MenuState {
 
     private:
         MenuState();
-        std::string _state = "firstmenu";
+        std::string _state = M_FIRSTMENU;
 };

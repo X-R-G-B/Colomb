@@ -26,24 +26,33 @@ std::string &TextEntry::text()
     return _text.text;
 }
 
+bool TextEntry::isClicked(raylib::Window &window)
+{
+    if (!window.IsFocused()) {
+        return false;
+    }
+    if (!raylib::Mouse::IsButtonPressed(MOUSE_BUTTON_LEFT)) {
+        return false;
+    }
+    const auto pos = raylib::Mouse::GetPosition();
+    if (!_rect.CheckCollision(pos)) {
+        return false;
+    }
+    return true;
+}
+
 void TextEntry::update(raylib::Window &window)
 {
     if (_isReadonly) {
         return;
     }
-    if (!window.IsFocused()) {
-        return;
-    }
-    if (raylib::Mouse::IsButtonPressed(MOUSE_BUTTON_LEFT)) {
-        const auto pos = raylib::Mouse::GetPosition();
-        if (_rect.CheckCollision(pos)) {
-            if (_isFocused == false) {
-                _isFocused = true;
-            }
-        } else {
-            if (_isFocused == true) {
-                _isFocused = false;
-            }
+    if (this->isClicked(window)) {
+        if (_isFocused == false) {
+            _isFocused = true;
+        }
+    } else {
+        if (_isFocused == true) {
+            _isFocused = false;
         }
     }
     if (!_isFocused) {
