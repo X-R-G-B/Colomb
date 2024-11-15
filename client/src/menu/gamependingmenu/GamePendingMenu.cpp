@@ -1,6 +1,8 @@
 #include "GamePendingMenu.hpp"
 #include <memory>
 #include "GlobalValues.hpp"
+#include "INetwork.hpp"
+#include "Logger.hpp"
 
 GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
 {
@@ -26,6 +28,46 @@ GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
 
 void GamePendingMenu::update(raylib::Window &window)
 {
+    if (!_stateFirstSync) {
+        network.send({
+            {"type", "state"}
+        });
+        _stateFirstSync = true;
+    }
+    while (network.hasPacket()) {
+        const auto message = network.receive();
+        if (!message.contains("type") || !message.at("type").is_string()) {
+            continue;
+        }
+        const auto messageType = message.at("type").template get<std::string>();
+        if (messageType == "state") {
+            if (!message.contains("players") || !message.contains("owner") || !message.contains("game")
+                || !message.at("players").is_array() || !message.at("owner").is_string()
+                || !message.at("game").is_string()) {
+                continue;
+            }
+            const auto participants = message.at("players").template get<std::vector<std::string>>();
+            const auto owner        = message.at("owner").template get<std::string>();
+            const auto game         = message.at("game").template get<std::string>();
+            _participants.clearParticipants();
+            for (const auto &username : participants) {
+                _participants.addParticipant(window, username);
+            }
+        } else if (messageType == "newPlayer") {
+            if (!message.contains("player") || !message.at("player").is_string()) {
+                continue;
+            }
+            const auto player = message.at("player").template get<std::string>();
+            Logger::debug("NEWPLAYER: " + player);
+            _participants.addParticipant(window, player);
+        } else if (messageType == "delPlayer") {
+            if (!message.contains("player") || !message.at("player").is_string()) {
+                continue;
+            }
+            const auto player = message.at("player").template get<std::string>();
+            _participants.removeParticipant(player);
+        }
+    }
     if (_textEntries["roomName"]->isClicked(window)) {
         window.SetClipboardText(_textEntries["roomName"]->text());
     }

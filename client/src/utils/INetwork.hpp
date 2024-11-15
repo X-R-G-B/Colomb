@@ -7,6 +7,7 @@
 
 class INetwork {
     public:
+        virtual ~INetwork() = default;
         static INetwork &GetInstance();
         virtual bool init(const std::string &url, const unsigned int port) = 0;
         virtual void update()                                              = 0;

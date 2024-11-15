@@ -77,11 +77,8 @@ void TextEntry::update(raylib::Window &window)
     }
 }
 
-void TextEntry::draw(raylib::Window &window) const
+void TextEntry::draw(raylib::Window & /* unused */) const
 {
-    if (!window.IsFocused()) {
-        return;
-    }
     _rect.Draw(_bgColor);
 
     const auto size_text    = _text.MeasureEx();

@@ -14,8 +14,8 @@ class Participants {
         void draw(raylib::Window &window);
         void free(raylib::Window &window);
 
-        void addParticipant(const std::string &username);
-        void clearParticipants(const std::string &username);
+        void addParticipant(raylib::Window &window, const std::string &username);
+        void clearParticipants();
         void removeParticipant(const std::string &username);
 
     private:

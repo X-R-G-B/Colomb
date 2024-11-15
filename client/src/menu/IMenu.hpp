@@ -4,6 +4,7 @@
 
 class IMenu {
     public:
+        virtual ~IMenu()                            = default;
         virtual void update(raylib::Window &window) = 0;
         virtual void draw(raylib::Window &window)   = 0;
         virtual void free(raylib::Window &window)   = 0;

@@ -58,12 +58,25 @@
 |                                    <--  Return State (the current user    |
 |                                     |   is in the players list)           |
 |                                     |   {                                 |
+|                                     |    "type": "state",                 |
 |                                     |    "players": [                     |
 |                                     |      "<username1>",                 |
 |                                     |      "<username2>"                  |
 |                                     |    ],                               |
 |                                     |    "owner": "<usernameX>"           |
 |                                     |    "game": "<gameName>"             |
+|                                     |   }                                 |
+| ----------------------------------- | ----------------------------------- |
+|                                    <--  New player connected              |
+|                                     |   {                                 |
+|                                     |    "type": "newPlayer",             |
+|                                     |    "player": "<username>"           |
+|                                     |   }                                 |
+| ----------------------------------- | ----------------------------------- |
+|                                    <--  A player disconnected             |
+|                                     |   {                                 |
+|                                     |    "type": "delPlayer",             |
+|                                     |    "player": "<username>"           |
 |                                     |   }                                 |
 | ----------------------------------- | ----------------------------------- |
 |   Set Readyness                    -->  Set ready status of the client    |

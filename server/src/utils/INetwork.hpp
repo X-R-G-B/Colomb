@@ -15,6 +15,7 @@ class INetwork {
         };
         using OnNewPeerFn        = std::function<void(std::shared_ptr<IPeer>)>;
         using OnDisconnectPeerFn = std::function<void(std::shared_ptr<IPeer>)>;
+        virtual ~INetwork()      = default;
         static INetwork &GetInstance();
         virtual bool init(OnNewPeerFn onNewPeer, OnDisconnectPeerFn onDisconnectPeer) = 0;
         virtual void update()                                                         = 0;

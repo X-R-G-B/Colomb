@@ -114,6 +114,7 @@ void Game::update()
                 network.send(
                     player._peer,
                     {
+                        {"type",    "state"                         },
                         {"players", users                           },
                         {"owner",   _players.at(_keyOwner)._username},
                         {"game",    _selectedGame                   }
@@ -144,6 +145,16 @@ void Game::addPeer(std::shared_ptr<INetwork::IPeer> peer, const std::string &use
     if (_players.size() == 1) {
         _keyOwner = peer->getId();
     }
+    for (const auto &[key, p_i] : _players) {
+        if (key != peer->getId()) {
+            network.send(
+                p_i._peer,
+                {
+                    {"type",   "newPlayer"                      },
+                    {"player", _players[peer->getId()]._username}
+            });
+        }
+    }
 }
 
 bool Game::isPeerInside(std::shared_ptr<INetwork::IPeer> peer)
@@ -154,6 +165,16 @@ bool Game::isPeerInside(std::shared_ptr<INetwork::IPeer> peer)
 void Game::disconnectPeer(std::shared_ptr<INetwork::IPeer> peer)
 {
     if (!this->isStarted()) {
+        for (const auto &[key, p_i] : _players) {
+            if (key != peer->getId()) {
+                network.send(
+                    p_i._peer,
+                    {
+                        {"type",   "delPlayer"                      },
+                        {"player", _players[peer->getId()]._username}
+                });
+            }
+        }
         _players.erase(peer->getId());
     } else {
         _players[peer->getId()]._isDisconnected = true;

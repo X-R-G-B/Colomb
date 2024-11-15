@@ -34,11 +34,8 @@ bool Button::isClicked(raylib::Window &window) const
     return true;
 }
 
-void Button::draw(raylib::Window &window) const
+void Button::draw(raylib::Window & /* unused */) const
 {
-    if (!window.IsFocused()) {
-        return;
-    }
     _texture.Draw(_position);
     const auto size_text    = _text.MeasureEx();
     auto pos_text           = _position;
