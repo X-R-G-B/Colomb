@@ -18,7 +18,7 @@ JoinGameMenu::JoinGameMenu(raylib::Window &window)
     // text
     _textEntries["username_text"] = std::make_unique<TextEntry>(
         raylib::Vector2(0, 0),
-        raylib::Vector2(100, 50),
+        raylib::Vector2(120, 50),
         raylib::Color::White(),
         raylib::Color::Black(),
         20,
@@ -46,7 +46,7 @@ JoinGameMenu::JoinGameMenu(raylib::Window &window)
     // ------------------- Join Room
     _textEntries["join_text"] = std::make_unique<TextEntry>(
         raylib::Vector2(0, 0),
-        raylib::Vector2(100, 50),
+        raylib::Vector2(120, 50),
         raylib::Color::White(),
         raylib::Color::Black(),
         20,
@@ -68,9 +68,8 @@ JoinGameMenu::JoinGameMenu(raylib::Window &window)
         2.5,
         10);
     const auto sizeTextEntryRoomName = _textEntries["roomName"]->getRect().GetSize();
-    _textEntries["roomName"]->setPosition(raylib::Vector2(
-        middle.x - (sizeTextEntryRoomName.x / 2) - mid_middle.x,
-        middle.y + sizeTextEntryRoomName.y));
+    _textEntries["roomName"]->setPosition(
+        raylib::Vector2(middle.x - (sizeTextEntryRoomName.x / 2) - mid_middle.x, middle.y + 10));
     // button connect
     _buttons["connecting"] = std::make_unique<Button>(
         raylib::Vector2(0, 0),
@@ -80,11 +79,11 @@ JoinGameMenu::JoinGameMenu(raylib::Window &window)
     const auto sizeButtonPlay = _buttons["connecting"]->getTexture().GetSize();
     _buttons["connecting"]->setPosition(raylib::Vector2(
         middle.x - (sizeButtonPlay.x / 2) - mid_middle.x,
-        middle.y + sizeButtonPlay.y + sizeTextEntryRoomName.y));
+        middle.y + sizeTextEntryRoomName.y + 10 + 10));
     // ------------------- Create Room
     _textEntries["create_text"] = std::make_unique<TextEntry>(
         raylib::Vector2(0, 0),
-        raylib::Vector2(100, 50),
+        raylib::Vector2(150, 50),
         raylib::Color::White(),
         raylib::Color::Black(),
         20,
@@ -103,9 +102,8 @@ JoinGameMenu::JoinGameMenu(raylib::Window &window)
         "",
         true);
     const auto sizeButtonCreate = _buttons["create"]->getTexture().GetSize();
-    _buttons["create"]->setPosition(raylib::Vector2(
-        middle.x - (sizeButtonCreate.x / 2) + mid_middle.x,
-        middle.y + sizeButtonCreate.y + sizeTextEntryCreateText.y));
+    _buttons["create"]->setPosition(
+        raylib::Vector2(middle.x - (sizeButtonCreate.x / 2) + mid_middle.x, middle.y + 10));
 }
 
 void JoinGameMenu::update(raylib::Window &window)
