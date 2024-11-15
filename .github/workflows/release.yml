@@ -167,7 +167,10 @@ jobs:
         git clone --recurse-submodules https://github.com/raysan5/raylib.git raylib-repo
         cd raylib-repo || exit 14
         git checkout ${{ env.RAYLIB_TAG }}
-        rm -rf .git
+        rm -rf .git/
+        rm -rf .github/
+        rm -rf examples/
+        rm -rf projects/
         cd ..
 
     - name: To Tar
