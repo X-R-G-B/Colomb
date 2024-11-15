@@ -7,7 +7,7 @@
 #include "PathResolver.hpp"
 #include "TextEntry.hpp"
 
-GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
+GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window), _gamesMode(window)
 {
     const auto win_size   = window.GetSize();
     const auto middle     = win_size.Divide(2);
@@ -25,30 +25,6 @@ GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
     _textEntries["roomName"]->setPosition(raylib::Vector2(middle.x - sizeTextRoomName.x / 2, 10));
     _textEntries["roomName"]->setReadonly(true);
     _textEntries["roomName"]->text().assign(globalValues._roomName);
-    // text display game
-    _textEntries["game_text"] = std::make_unique<TextEntry>(
-        raylib::Vector2(0, 0),
-        raylib::Vector2(100, 50),
-        raylib::Color::Black(),
-        raylib::Color::White(),
-        20,
-        2.5);
-    const auto sizeTextGame = _textEntries["game_text"]->getRect().GetSize();
-    _textEntries["game_text"]->setPosition(
-        raylib::Vector2(middle.x + mid_middle.x - (sizeTextGame.x / 2), 10));
-    _textEntries["game_text"]->setReadonly(true);
-    _textEntries["game_text"]->text().assign("Game:");
-    // text display game name
-    _textEntries["game_name"] = std::make_unique<TextEntry>(
-        raylib::Vector2(0, 0),
-        raylib::Vector2(100, 50),
-        raylib::Color::Black(),
-        raylib::Color::White(),
-        20,
-        2.5);
-    _textEntries["game_name"]->setPosition(
-        raylib::Vector2(_textEntries["game_text"]->getRect().GetPosition().x, 10 + sizeTextGame.y + 10));
-    _textEntries["game_name"]->setReadonly(true);
     // ------------------------------ start
     // button start
     _textEntries["start_button"] = std::make_unique<TextEntry>(
@@ -60,7 +36,7 @@ GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
         2.5);
     const auto sizeTextStart = _textEntries["start_button"]->getRect().GetSize();
     _textEntries["start_button"]->setPosition(
-        raylib::Vector2(middle.x - (sizeTextStart.x / 2), middle.y + mid_middle.y));
+        raylib::Vector2(middle.x - (sizeTextStart.x / 2), middle.y + mid_middle.y - (sizeTextStart.y / 2)));
     _textEntries["start_button"]->setReadonly(true);
     _textEntries["start_button"]->text().assign("Start!");
     // ------------------------------ ready
@@ -74,8 +50,8 @@ GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
         2.5);
     const auto sizeTextReady = _textEntries["ready_state"]->getRect().GetSize();
     _textEntries["ready_state"]->setPosition(raylib::Vector2(
-        middle.x + mid_middle.x - (sizeTextReady.x / 2),
-        middle.y + mid_middle.y + (mid_middle.y / 2) - (sizeTextReady.y / 2)));
+        middle.x - (sizeTextReady.x / 2),
+        _textEntries["start_button"]->getRect().GetPosition().y + sizeTextStart.y + 10));
     _textEntries["ready_state"]->setReadonly(true);
     _textEntries["ready_state"]->text().assign("Ready:");
     // button ready ok
@@ -87,7 +63,7 @@ GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
     _buttons["ready_ok"]->setPosition(raylib::Vector2(
         _textEntries["ready_state"]->getRect().GetPosition().x,
         _textEntries["ready_state"]->getRect().GetPosition().y
-            + _textEntries["ready_state"]->getRect().GetSize().y + 10));
+            + _textEntries["ready_state"]->getRect().GetSize().y + 5));
     // button ready not ok
     _buttons["ready_ko"] = std::make_unique<Button>(
         raylib::Vector2(0, 0),
@@ -124,8 +100,7 @@ void GamePendingMenu::update(raylib::Window &window)
             const auto participants_ready = message.at("players_ready").template get<std::vector<bool>>();
             const auto owner              = message.at("owner").template get<std::string>();
             const auto game               = message.at("game").template get<std::string>();
-            _textEntries["game_name"]->text().assign(game);
-            _textEntries["game_name"]->setRectSizeToTextSize();
+            _gamesMode.setCurrentGameMode(game);
             _participants.clearParticipants();
             for (size_t i = 0; i < std::min(participants.size(), participants_ready.size()); i++) {
                 _participants.addParticipant(window, participants[i]);
@@ -182,8 +157,7 @@ void GamePendingMenu::update(raylib::Window &window)
                     continue;
                 }
             }
-            _textEntries["game_name"]->text().assign(game);
-            _textEntries["game_name"]->setRectSizeToTextSize();
+            _gamesMode.setCurrentGameMode(game);
         } else if (messageType == "start") {
             if (!message.contains("gameName") || !message.at("gameName").is_string()) {
                 continue;
@@ -225,6 +199,7 @@ void GamePendingMenu::update(raylib::Window &window)
         _buttons["ready_ok"]->setClickable(_isReady);
     }
     _participants.update(window);
+    _gamesMode.update(window);
     if (_participants.getOwner() == globalValues._username
         && _textEntries["start_button"]->isClicked(window) == TextEntry::ClickedInside) {
         network.send({
@@ -236,8 +211,6 @@ void GamePendingMenu::update(raylib::Window &window)
 void GamePendingMenu::draw(raylib::Window &window)
 {
     _textEntries["roomName"]->draw(window);
-    _textEntries["game_text"]->draw(window);
-    _textEntries["game_name"]->draw(window);
     _textEntries["ready_state"]->draw(window);
     if (_isReady) {
         _buttons["ready_ok"]->draw(window);
@@ -248,9 +221,11 @@ void GamePendingMenu::draw(raylib::Window &window)
         _textEntries["start_button"]->draw(window);
     }
     _participants.draw(window);
+    _gamesMode.draw(window);
 }
 
 void GamePendingMenu::free(raylib::Window &window)
 {
     _participants.free(window);
+    _gamesMode.free(window);
 }

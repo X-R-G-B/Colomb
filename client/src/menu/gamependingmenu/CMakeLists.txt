@@ -11,4 +11,5 @@ target_sources(
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/GamePendingMenu.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Participants.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GamesMode.cpp
 )

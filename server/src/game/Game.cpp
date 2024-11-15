@@ -210,6 +210,9 @@ void Game::connectPeer(std::shared_ptr<INetwork::IPeer> peer)
 
 bool Game::startGame(const Player &player)
 {
+    if (_selectedGame.length() == 0) {
+        return false;
+    }
     if (player._peer->getId() != _keyOwner) {
         return false;
     }
