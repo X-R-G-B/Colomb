@@ -9,7 +9,7 @@ int main(int /*unused*/, const char **av)
 #ifndef NDEBUG
     Logger::setLogLevel(LogLevel::Debug);
 #else
-    Logger::setLogLevel(LogLevel::Warn);
+    Logger::setLogLevel(LogLevel::Info);
 #endif
     ResourcesManager::init(av[0]);
     raylib::Window window(800, 600, "Colomb");
