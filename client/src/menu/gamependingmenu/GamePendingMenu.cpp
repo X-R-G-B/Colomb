@@ -3,6 +3,7 @@
 #include <memory>
 #include "GlobalValues.hpp"
 #include "INetwork.hpp"
+#include "Logger.hpp"
 #include "MenuState.hpp"
 #include "PathResolver.hpp"
 #include "TextEntry.hpp"
@@ -13,6 +14,9 @@ GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
     const auto middle     = win_size.Divide(2);
     const auto mid_middle = middle.Divide(2);
 
+    _gamesMode.setOnGameModeClicked([this](const std::string &gameMode) {
+        this->onGameModeClicked(gameMode);
+    });
     // text display roomName
     _textEntries["roomName"] = std::make_unique<TextEntry>(
         raylib::Vector2(0, 0),
@@ -76,11 +80,24 @@ GamePendingMenu::GamePendingMenu(raylib::Window &window) : _participants(window)
             + _textEntries["ready_state"]->getRect().GetSize().y + 10));
 }
 
+void GamePendingMenu::onGameModeClicked(const std::string &gameMode)
+{
+    if (globalValues._username == _participants.getOwner()) {
+        network.send({
+            {"type", "select"},
+            {"game", gameMode},
+        });
+    }
+}
+
 void GamePendingMenu::update(raylib::Window &window)
 {
     if (!_stateFirstSync) {
         network.send({
             {"type", "state"}
+        });
+        network.send({
+            {"type", "games"}
         });
         _stateFirstSync = true;
     }
@@ -140,7 +157,10 @@ void GamePendingMenu::update(raylib::Window &window)
             const auto games_name = message.at("games_name").template get<std::vector<std::string>>();
             const auto games_description =
                 message.at("games_description").template get<std::vector<std::string>>();
-            // TODO:
+            for (size_t i = 0; i < std::min(games_name.size(), games_description.size()); i++) {
+                _gamesMode.addGamesMode(games_name[i]);
+                // TODO: description
+            }
         } else if (messageType == "select") {
             if (!message.contains("gameName") || !message.at("gameName").is_string()) {
                 continue;
@@ -150,6 +170,7 @@ void GamePendingMenu::update(raylib::Window &window)
                 if (message.at("success").is_boolean()) {
                     const auto success = message.at("success").template get<bool>();
                     if (!success) {
+                        Logger::error("GAMEPENDINGMENU: got select success=false");
                         // TODO: notif error
                         continue;
                     }
@@ -167,6 +188,7 @@ void GamePendingMenu::update(raylib::Window &window)
                 if (message.at("success").is_boolean()) {
                     const auto success = message.at("success").template get<bool>();
                     if (!success) {
+                        Logger::error("GAMEPENDINGMENU: got start success=false");
                         // TODO: notif error
                         continue;
                     }

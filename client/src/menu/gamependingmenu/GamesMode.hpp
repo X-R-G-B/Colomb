@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <unordered_map>
 #include <vector>
@@ -9,6 +10,8 @@
 
 class GamesMode {
     public:
+        using OnGameModeClicked = std::function<void(const std::string &gameMode)>;
+
         GamesMode(raylib::Window &window);
 
         void update(raylib::Window &window);
@@ -21,6 +24,8 @@ class GamesMode {
         void setCurrentGameMode(const std::string &gameMode);
         const std::string &getCurrentGameMode() const;
 
+        void setOnGameModeClicked(OnGameModeClicked onGameModeClicked);
+
     private:
         std::unordered_map<std::string, std::unique_ptr<TextEntry>> _textEntries;
         std::unordered_map<std::string, std::unique_ptr<Button>> _buttons;
@@ -29,4 +34,6 @@ class GamesMode {
 
         std::vector<std::string> _gamesMode;
         std::string _currentGameMode;
+
+        OnGameModeClicked _onGameModeClicked;
 };

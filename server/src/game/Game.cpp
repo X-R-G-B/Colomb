@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include <algorithm>
 #include <memory>
 #include "INetwork.hpp"
 #include "Logger.hpp"
@@ -51,15 +52,16 @@ void Game::update()
                 network.send(
                     player._peer,
                     {
-                        {"type",              "games"                },
-                        {"games_name",        nlohmann::json::array()},
-                        {"games_description", nlohmann::json::array()}
+                        {"type",              "games"                  },
+                        {"games_name",        _availableGameName       },
+                        {"games_description", _availableGameDescription}
                 });
             } else if (messageType == "select") {
                 if (!message.contains("game") || !message.at("game").is_string()) {
                     continue;
                 }
                 if (player._peer->getId() != _keyOwner) {
+                    Logger::error("GAME: peer is asking to select but is not owner");
                     network.send(
                         player._peer,
                         {
@@ -69,8 +71,8 @@ void Game::update()
                     continue;
                 }
                 const auto gameSelect = message.at("game").template get<std::string>();
-                // TODO: check if game available.
-                bool success = true;
+                bool success = std::find(_availableGameName.begin(), _availableGameName.end(), gameSelect)
+                    != _availableGameName.end();
                 if (success) {
                     _selectedGame = gameSelect;
                     network.send(
@@ -91,6 +93,7 @@ void Game::update()
                         }
                     }
                 } else {
+                    Logger::error("GAME: peer is asking to select an unavailable game");
                     network.send(
                         player._peer,
                         {

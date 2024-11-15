@@ -18,6 +18,8 @@ class GamePendingMenu : public IMenu {
         void free(raylib::Window &window);
 
     private:
+        void onGameModeClicked(const std::string &gameMode);
+
         std::unordered_map<std::string, std::unique_ptr<TextEntry>> _textEntries;
         std::unordered_map<std::string, std::unique_ptr<Button>> _buttons;
         Participants _participants;

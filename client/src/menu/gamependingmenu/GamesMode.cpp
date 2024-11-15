@@ -40,8 +40,8 @@ GamesMode::GamesMode(raylib::Window &window)
         true);
     _buttons["arrow_up"]->setPosition(raylib::Vector2(
         _textEntries["game_name"]->getRect().GetX() + 10,
-        _textEntries["game_name"]->getRect().GetY()
-            + _textEntries["game_name"]->getRect().GetSize().GetY() + 5));
+        _textEntries["game_name"]->getRect().GetY() + _textEntries["game_name"]->getRect().GetSize().GetY()
+            + 5));
     // arrow down
     _buttons["arrow_down"] = std::make_unique<Button>(
         raylib::Vector2(0, 0),
@@ -69,6 +69,11 @@ void GamesMode::update(raylib::Window &window)
                 textEntry->getRect().GetPosition().GetY() + size_box));
         }
     }
+    for (const auto &[gameModeKey, textEntry] : _textGamesMode) {
+        if (textEntry->isClicked(window) == TextEntry::ClickedInside) {
+            _onGameModeClicked(gameModeKey);
+        }
+    }
 }
 
 void GamesMode::draw(raylib::Window &window)
@@ -80,7 +85,8 @@ void GamesMode::draw(raylib::Window &window)
     const auto max_y = _buttons["arrow_down"]->GetPosition().y - 5;
     for (const auto &gameMode : _gamesMode) {
         if (_textGamesMode.contains(gameMode)
-            && _textGamesMode[gameMode]->getRect().GetPosition().y + _textGamesMode[gameMode]->getRect().GetSize().y
+            && _textGamesMode[gameMode]->getRect().GetPosition().y
+                    + _textGamesMode[gameMode]->getRect().GetSize().y
                 < max_y
             && _textGamesMode[gameMode]->getRect().GetPosition().y > min_y) {
             _textGamesMode[gameMode]->draw(window);
@@ -103,8 +109,7 @@ void GamesMode::addGamesMode(const std::string &gameMode)
     }
     if (_gamesMode.size() == 0) {
         cursor.x = _textEntries["game_name"]->getRect().GetX();
-        cursor.y = _textEntries["game_name"]->getRect().GetY()
-            + _textEntries["game_name"]->getRect().GetSize().GetY() + 5
+        cursor.y = _buttons["arrow_up"]->GetPosition().GetY()
             + _buttons["arrow_up"]->getTexture().GetSize().y + 10;
     } else {
         cursor = _textGamesMode[_gamesMode.back()]->getRect().GetPosition()
@@ -128,12 +133,12 @@ void GamesMode::clearGamesMode()
 {
     _gamesMode.clear();
     _textGamesMode.clear();
-    _currentGameMode    = "";
+    _currentGameMode = "";
 }
 
 void GamesMode::setCurrentGameMode(const std::string &gameMode)
 {
-    _currentGameMode    = gameMode;
+    _currentGameMode = gameMode;
     _textEntries["game_name"]->text().assign(gameMode);
     _textEntries["game_name"]->setRectSizeToTextSize();
 }
@@ -141,4 +146,9 @@ void GamesMode::setCurrentGameMode(const std::string &gameMode)
 const std::string &GamesMode::getCurrentGameMode() const
 {
     return _currentGameMode;
+}
+
+void GamesMode::setOnGameModeClicked(OnGameModeClicked onGameModeClicked)
+{
+    _onGameModeClicked = onGameModeClicked;
 }
