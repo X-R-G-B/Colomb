@@ -47,7 +47,7 @@ void GamesManager::update()
     network.update();
     for (auto &[key, peer] : _globalLobby) {
         while (network.hasPacket(peer)) {
-            const auto message = network.receive(peer);
+            const auto message     = network.receive(peer);
             const auto messageType = message.at("type").template get<std::string>();
             if (messageType == "join") {
                 if (this->connectPeer(message["roomName"], peer)) {
