@@ -13,8 +13,8 @@ cd build || exit 14
 
 cpack --config CPackConfig.cmake -G DragNDrop || (cat "./_CPack_Packages/Darwin/DragNDrop/PreinstallOutput.log" && exit 1)
 
-cp Colomb-Darwin.dmg ../Colomb-macos.dmg
+cp Colomb_server-Darwin.dmg ../Colomb_server-macos.dmg
 
 cpack --config CPackSourceConfig.cmake -G ZIP
 
-cp Colomb-Darwin.zip ../Colomb-macos.zip
+cp Colomb_server-Darwin.zip ../Colomb_server-macos.zip

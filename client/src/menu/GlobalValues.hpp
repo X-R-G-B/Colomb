@@ -9,4 +9,5 @@ class GlobalValues {
         static GlobalValues &GetInstance();
 
         std::string _roomName = "";
+        std::string _username = "";
 };

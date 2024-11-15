@@ -27,6 +27,7 @@ class TextEntry {
         const raylib::Rectangle &getRect() const;
         void setReadonly(bool readOnly);
         ClickedState isClicked(raylib::Window &wndow);
+        void setRectSizeToTextSize();
 
         TextEntry &operator=(const TextEntry &src);
 

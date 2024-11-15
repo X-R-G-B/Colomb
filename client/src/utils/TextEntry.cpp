@@ -119,3 +119,11 @@ void TextEntry::setReadonly(bool readOnly)
 {
     _isReadonly = readOnly;
 }
+
+void TextEntry::setRectSizeToTextSize()
+{
+    auto size = _text.MeasureEx();
+    size.x += 10;
+    size.y += 10;
+    _rect.SetSize(size);
+}

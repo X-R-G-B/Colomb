@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include <algorithm>
 #include <memory>
 #include "INetwork.hpp"
 #include "Logger.hpp"
@@ -37,21 +38,41 @@ void Game::update()
                 }
                 const auto readyState = message.at("ready").template get<bool>();
                 player._ready         = readyState;
+                for (const auto &[key_i, player_i] : _players) {
+                    network.send(
+                        player_i._peer,
+                        {
+                            {"type",   "ready"           },
+                            {"player", player_i._username},
+                            {"ready",  player_i._ready   },
+                    });
+                }
             } else if (messageType == "games") {
                 // TODO: get a list of available games.
                 network.send(
                     player._peer,
                     {
-                        {"type",  "games"                },
-                        {"games", nlohmann::json::array()}
+                        {"type",              "games"                  },
+                        {"games_name",        _availableGameName       },
+                        {"games_description", _availableGameDescription}
                 });
             } else if (messageType == "select") {
                 if (!message.contains("game") || !message.at("game").is_string()) {
                     continue;
                 }
+                if (player._peer->getId() != _keyOwner) {
+                    Logger::error("GAME: peer is asking to select but is not owner");
+                    network.send(
+                        player._peer,
+                        {
+                            {"type",    "select"},
+                            {"success", "false" },
+                    });
+                    continue;
+                }
                 const auto gameSelect = message.at("game").template get<std::string>();
-                // TODO: check if game available.
-                bool success = true;
+                bool success = std::find(_availableGameName.begin(), _availableGameName.end(), gameSelect)
+                    != _availableGameName.end();
                 if (success) {
                     _selectedGame = gameSelect;
                     network.send(
@@ -72,6 +93,7 @@ void Game::update()
                         }
                     }
                 } else {
+                    Logger::error("GAME: peer is asking to select an unavailable game");
                     network.send(
                         player._peer,
                         {
@@ -107,17 +129,20 @@ void Game::update()
                     });
                 }
             } else if (messageType == "state") {
-                auto users = std::vector<std::string>();
+                auto users       = std::vector<std::string>();
+                auto users_ready = std::vector<bool>();
                 for (const auto &[_, player_i] : _players) {
                     users.push_back(player_i._username);
+                    users_ready.push_back(player_i._ready);
                 }
                 network.send(
                     player._peer,
                     {
-                        {"type",    "state"                         },
-                        {"players", users                           },
-                        {"owner",   _players.at(_keyOwner)._username},
-                        {"game",    _selectedGame                   }
+                        {"type",          "state"                         },
+                        {"players",       users                           },
+                        {"players_ready", users_ready                     },
+                        {"owner",         _players.at(_keyOwner)._username},
+                        {"game",          _selectedGame                   }
                 });
             } else {
                 Logger::warn("GAME: unknow messageType");
@@ -188,8 +213,16 @@ void Game::connectPeer(std::shared_ptr<INetwork::IPeer> peer)
 
 bool Game::startGame(const Player &player)
 {
+    if (_selectedGame.length() == 0) {
+        return false;
+    }
     if (player._peer->getId() != _keyOwner) {
         return false;
+    }
+    for (const auto &[_, player] : _players) {
+        if (!player._ready) {
+            return false;
+        }
     }
     return true;
 }

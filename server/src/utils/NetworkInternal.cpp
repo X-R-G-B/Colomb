@@ -96,8 +96,11 @@ void Network::update()
 
 bool Network::send(std::shared_ptr<IPeer> peer, const nlohmann::json &data)
 {
-    auto peer_                = std::static_pointer_cast<Peer>(peer);
-    const auto text           = data.dump();
+    auto peer_      = std::static_pointer_cast<Peer>(peer);
+    const auto text = data.dump();
+#ifndef NDEBUG
+    Logger::debug("NETWORK_INTERNAL: send{" + peer_->getId() + "}:: '" + text + "'");
+#endif
     const auto textCompressed = Archive::compress(text);
     ENetPacket *packet =
         enet_packet_create(textCompressed.data(), textCompressed.size(), ENET_PACKET_FLAG_RELIABLE);

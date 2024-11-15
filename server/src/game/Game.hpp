@@ -34,4 +34,7 @@ class Game {
         std::string _selectedGame = "";
         std::unordered_map<std::string, Player> _players;
         std::string _keyOwner;
+
+        std::vector<std::string> _availableGameName        = {"Catan", "Test"};
+        std::vector<std::string> _availableGameDescription = {"The catan game", "test game"};
 };

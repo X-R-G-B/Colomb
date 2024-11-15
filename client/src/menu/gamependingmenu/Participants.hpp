@@ -18,6 +18,10 @@ class Participants {
         void clearParticipants();
         void removeParticipant(const std::string &username);
 
+        void setOwner(const std::string &username);
+        const std::string &getOwner() const;
+        void setParticipantReady(const std::string &username, bool ready);
+
     private:
         std::unordered_map<std::string, std::unique_ptr<TextEntry>> _textEntries;
         std::unordered_map<std::string, std::unique_ptr<Button>> _buttons;
@@ -26,4 +30,6 @@ class Participants {
         std::unordered_map<std::string, std::unique_ptr<Button>> _buttonsUsername;
 
         std::vector<std::string> _usernames;
+        std::string _owner;
+        bool _ownerSet = false;
 };

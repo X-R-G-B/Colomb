@@ -51,11 +51,14 @@ class ResourcesManager {
             }
             ResourcesManager::getMutex().unlock();
             if (found_path.empty() && path_const.starts_with("assets")) {
-                if (ResourcesManager::isExists(resource_path, "share/r-type")) {
+                if (ResourcesManager::isExists(resource_path, "share/Colomb")) {
                     std::filesystem::path path_tmp = resource_path;
                     path_tmp                       = path_tmp.append("share");
-                    path_tmp                       = path_tmp.append("r-type");
+                    path_tmp                       = path_tmp.append("Colomb");
                     std::string path(path_const, std::string("assets").length(), std::string::npos);
+                    if (path.starts_with("/") && path.length() != 1) {
+                        path = std::string(path, 1, std::string::npos);
+                    }
                     path_tmp = path_tmp.append(path);
                     path_tmp = path_tmp.make_preferred();
                     Logger::debug("RESOURCE_MANAGER: Path found: " + path_tmp.string());

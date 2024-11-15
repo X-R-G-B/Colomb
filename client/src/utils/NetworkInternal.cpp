@@ -80,7 +80,10 @@ void Network::update()
 
 bool Network::send(const nlohmann::json &data)
 {
-    const auto text           = data.dump();
+    const auto text = data.dump();
+#ifndef NDEBUG
+    Logger::debug("NETWORK_INTERNAL: send:: '" + text + "'");
+#endif
     const auto textCompressed = Archive::compress(text);
     ENetPacket *packet =
         enet_packet_create(textCompressed.data(), textCompressed.size(), ENET_PACKET_FLAG_RELIABLE);

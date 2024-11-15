@@ -400,3 +400,88 @@ jobs:
         with:
           name: Colomb_server-linux.sh
           path: ./server/Colomb_server-linux.sh
+
+  release-server-macos:
+    runs-on: macos-latest
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          cd server
+          ./scripts/install-deps-macos.sh
+
+      - name: Build
+        run: |
+          cd server
+          ./scripts/bundle-macos.sh
+
+      - name: Upload To Release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ needs.release-create.outputs.release }} ./server/Colomb_server-macos.zip
+          gh release upload ${{ needs.release-create.outputs.release }} ./server/Colomb_server-macos.dmg
+
+      - name: Upload To Artifact
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Colomb_server-macos.dmg
+          path: ./server/Colomb_server-macos.dmg
+
+      - name: Upload To Artifact
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Colomb_server-macos.zip
+          path: ./server/Colomb-macos.zip
+
+  release-server-windows:
+    runs-on: windows-latest
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install winget
+        uses: Cyberboss/install-winget@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: |
+          cd server
+          ./scripts/install-deps-windows.ps1
+
+      - name: Build
+        run: |
+          cd server
+          ./scripts/bundle-windows.ps1
+
+      - name: Upload To Release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ needs.release-create.outputs.release }} ./server/Colomb_server-windows.zip
+          gh release upload ${{ needs.release-create.outputs.release }} ./server/Colomb_server-windows.exe
+
+      - name: Upload To Artifact
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Colomb_server-windows.zip
+          path: ./server/Colomb_server-windows.zip
+
+      - name: Upload To Artifact
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Colomb_server-windows.exe
+          path: ./server/Colomb_server-windows.exe

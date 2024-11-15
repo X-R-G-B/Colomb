@@ -17,10 +17,10 @@ if ($LASTEXITCODE -ne 0) {
     type _CPack_Packages/win64/NSIS/NSISOutput.log
 }
 
-Copy-Item Colomb-Windows.exe ../Colomb-windows.exe
+Copy-Item Colomb_server-Windows.exe ../Colomb_server-windows.exe
 
 cpack --config CPackSourceConfig.cmake -G ZIP
 
-Copy-Item Colomb-Windows.zip ../Colomb-windows.zip
+Copy-Item Colomb_server-Windows.zip ../Colomb_server-windows.zip
 
 cd ..
