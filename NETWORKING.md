@@ -16,6 +16,7 @@
 |                                     |   {                                 |
 |                                     |    "type": "join",                  |
 |                                     |    "success": true,                 |
+|                                     |    "username": "<username>",        |
 |                                     |    "roomName": "<roomName>"         |
 |                                     |   }                                 |
 |                                     |   or                                |
@@ -35,6 +36,7 @@
 |                                     |   {                                 |
 |                                     |    "type": "create",                |
 |                                     |    "success": true,                 |
+|                                     |    "username": "<username>",        |
 |                                     |    "roomName": "<roomName>"         |
 |                                     |   }                                 |
 |                                     |   or                                |
@@ -63,6 +65,10 @@
 |                                     |      "<username1>",                 |
 |                                     |      "<username2>"                  |
 |                                     |    ],                               |
+|                                     |    "players_ready": [               | (in the same order as the players)
+|                                     |      false,                         | (i.e.: username1 is not ready)
+|                                     |      true                           | (i.e.: username2 is ready)
+|                                     |    ],                               |
 |                                     |    "owner": "<usernameX>"           |
 |                                     |    "game": "<gameName>"             |
 |                                     |   }                                 |
@@ -90,6 +96,18 @@
 |    "ready": false                   |                                     |
 |   }                                 |                                     |
 |                                     |                                     |
+|                                    <--  Send to all players               |
+|                                     |   {                                 |
+|                                     |    "type": "ready",                 |
+|                                     |    "player": "<username>",          |
+|                                     |    "ready": true                    |
+|                                     |   }                                 |
+|                                     |   or                                |
+|                                     |   {                                 |
+|                                     |    "type": "ready",                 |
+|                                     |    "player": "<username>",          |
+|                                     |    "ready": false                   |
+|                                     |   }                                 |
 | ----------------------------------- | ----------------------------------- |
 |   Get games possibilities:         -->                                    |
 |   {                                 |                                     |
@@ -99,11 +117,13 @@
 |                                    <--  List all types of games           |
 |                                     |   {                                 |
 |                                     |    "type": "games",                 |
-|                                     |    "games": [                       |
-|                                     |      {                              |
-|                                     |       "name": "<gameName>",         |
-|                                     |       "description": "<desc>"       |
-|                                     |      }                              |
+|                                     |    "games_name": [                  |
+|                                     |      "<gameName1>",                 |
+|                                     |      "<gameName2>"                  |
+|                                     |    ],                               |
+|                                     |    "games_description": [           | (int the same order as games_name)
+|                                     |      "<description1>",              | (i.e.: description1 is the description of gameName1)
+|                                     |      "<description2>"               | (i.e.: description2 is the description of gameName2)
 |                                     |    ]                                |
 |                                     |   }                                 |
 | ----------------------------------- | ----------------------------------- |
@@ -138,7 +158,8 @@
 |    "type": "start",                 |                                     |
 |   }                                 |                                     |
 |                                     |                                     |
-|                                    <--  Send start to all players         |
+|                                    <--  Start game                        |
+|                                     |   to the owner requesting it        |
 |                                     |   {                                 |
 |                                     |    "type": "start",                 |
 |                                     |    "success": true,                 |
@@ -148,6 +169,12 @@
 |                                     |   {                                 |
 |                                     |    "type": "create",                |
 |                                     |    "success": false                 |
+|                                     |   }                                 |
+|                                     |   To all the participants (only     |
+|                                     |   when success)                     |
+|                                     |   {                                 |
+|                                     |    "type": "start",                 |
+|                                     |    "gameName": "<gameName>"         |
 |                                     |   }                                 |
 | ----------------------------------- | ----------------------------------- |
 ```

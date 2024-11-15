@@ -21,4 +21,5 @@ class GamePendingMenu : public IMenu {
         std::unordered_map<std::string, std::unique_ptr<Button>> _buttons;
         Participants _participants;
         bool _stateFirstSync = false;
+        bool _isReady        = false;
 };

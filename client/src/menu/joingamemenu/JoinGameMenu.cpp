@@ -110,25 +110,46 @@ void JoinGameMenu::update(raylib::Window &window)
 {
     _textEntries["roomName"]->update(window);
     _textEntries["username"]->update(window);
-    if (network.hasPacket()) {
-        const auto message     = network.receive();
+    while (network.hasPacket()) {
+        const auto message = network.receive();
+        if (!message.contains("type") || !message.at("type").is_string()) {
+            continue;
+        }
         const auto messageType = message.at("type").template get<std::string>();
         if (messageType == "join") {
+            if (!message.contains("success") || !message.at("success").is_boolean()) {
+                continue;
+            }
             const auto success = message.at("success").template get<bool>();
             if (success) {
-                const auto roomName = message.at("roomName").template get<std::string>();
-                menuState.setState(M_GAMEPENDIGMENU);
+                if (!message.contains("roomName") || !message.contains("username")
+                    || !message.at("roomName").is_string() || !message.at("username").is_string()) {
+                    continue;
+                }
+                const auto roomName    = message.at("roomName").template get<std::string>();
+                const auto username    = message.at("username").template get<std::string>();
                 globalValues._roomName = roomName;
+                globalValues._username = username;
+                menuState.setState(M_GAMEPENDIGMENU);
                 return;
             } else {
                 Logger::error("JOIN: got a success=false");
                 // TODO: show notif
             }
         } else if (messageType == "create") {
+            if (!message.contains("success") || !message.at("success").is_boolean()) {
+                continue;
+            }
             const auto success = message.at("success").template get<bool>();
             if (success) {
+                if (!message.contains("roomName") || !message.contains("username")
+                    || !message.at("roomName").is_string() || !message.at("username").is_string()) {
+                    continue;
+                }
                 const auto roomName    = message.at("roomName").template get<std::string>();
+                const auto username    = message.at("username").template get<std::string>();
                 globalValues._roomName = roomName;
+                globalValues._username = username;
                 menuState.setState(M_GAMEPENDIGMENU);
                 return;
             } else {

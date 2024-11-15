@@ -65,6 +65,7 @@ void GamesManager::update()
                         {
                             {"type",     "join"  },
                             {"success",  true    },
+                            {"username", username},
                             {"roomName", roomName}
                     });
                 } else {
@@ -87,6 +88,7 @@ void GamesManager::update()
                         {
                             {"type",     "create"},
                             {"success",  true    },
+                            {"username", username},
                             {"roomName", roomName},
                     });
                 } else {

@@ -37,16 +37,35 @@ void Game::update()
                 }
                 const auto readyState = message.at("ready").template get<bool>();
                 player._ready         = readyState;
+                for (const auto &[key_i, player_i] : _players) {
+                    network.send(
+                        player_i._peer,
+                        {
+                            {"type",   "ready"           },
+                            {"player", player_i._username},
+                            {"ready",  player_i._ready   },
+                    });
+                }
             } else if (messageType == "games") {
                 // TODO: get a list of available games.
                 network.send(
                     player._peer,
                     {
-                        {"type",  "games"                },
-                        {"games", nlohmann::json::array()}
+                        {"type",              "games"                },
+                        {"games_name",        nlohmann::json::array()},
+                        {"games_description", nlohmann::json::array()}
                 });
             } else if (messageType == "select") {
                 if (!message.contains("game") || !message.at("game").is_string()) {
+                    continue;
+                }
+                if (player._peer->getId() != _keyOwner) {
+                    network.send(
+                        player._peer,
+                        {
+                            {"type",    "select"},
+                            {"success", "false" },
+                    });
                     continue;
                 }
                 const auto gameSelect = message.at("game").template get<std::string>();
@@ -107,17 +126,20 @@ void Game::update()
                     });
                 }
             } else if (messageType == "state") {
-                auto users = std::vector<std::string>();
+                auto users       = std::vector<std::string>();
+                auto users_ready = std::vector<bool>();
                 for (const auto &[_, player_i] : _players) {
                     users.push_back(player_i._username);
+                    users_ready.push_back(player_i._ready);
                 }
                 network.send(
                     player._peer,
                     {
-                        {"type",    "state"                         },
-                        {"players", users                           },
-                        {"owner",   _players.at(_keyOwner)._username},
-                        {"game",    _selectedGame                   }
+                        {"type",          "state"                         },
+                        {"players",       users                           },
+                        {"players_ready", users_ready                     },
+                        {"owner",         _players.at(_keyOwner)._username},
+                        {"game",          _selectedGame                   }
                 });
             } else {
                 Logger::warn("GAME: unknow messageType");
@@ -190,6 +212,11 @@ bool Game::startGame(const Player &player)
 {
     if (player._peer->getId() != _keyOwner) {
         return false;
+    }
+    for (const auto &[_, player] : _players) {
+        if (!player._ready) {
+            return false;
+        }
     }
     return true;
 }
