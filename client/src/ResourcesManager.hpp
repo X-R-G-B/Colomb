@@ -56,6 +56,9 @@ class ResourcesManager {
                     path_tmp                       = path_tmp.append("share");
                     path_tmp                       = path_tmp.append("Colomb");
                     std::string path(path_const, std::string("assets").length(), std::string::npos);
+                    if (path.starts_with("/") && path.length() != 1) {
+                        path = std::string(path, 1, std::string::npos);
+                    }
                     path_tmp = path_tmp.append(path);
                     path_tmp = path_tmp.make_preferred();
                     Logger::debug("RESOURCE_MANAGER: Path found: " + path_tmp.string());
