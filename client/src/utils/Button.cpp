@@ -69,3 +69,8 @@ void Button::setClickable(bool clickable)
 {
     _clickable = clickable;
 }
+
+const raylib::Vector2 &Button::GetPosition() const
+{
+    return _position;
+}
