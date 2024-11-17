@@ -39,8 +39,8 @@
 ```
 {                                           |
     "type": "div",                          |
-    "topLeftX": <x>,                        |
-    "topLeftY": <y>,                        |
+    "topLeftX": <x>,                        | Distance x from parent
+    "topLeftY": <y>,                        | Distance y from parent
     "childrens": {                          |
         "<identifier>": {                   |
             "type": "<type>",               |
@@ -56,11 +56,13 @@
 ```
 {                                           |
     "type": "button_image",                 |
-    "topLeftX": <x>,                        |
-    "topLeftY": <y>,                        |
+    "topLeftX": <x>,                        | Distance x from parent
+    "topLeftY": <y>,                        | Distance y from parent
     "image": "<identifier>",                |
-    "visible": <true/false>,                |
-    "clickable": <true/false>,              |
+    "visible": <true/false>,                | Is it draw to screen
+    "clickable": <true/false>,              | Is it clickable (it can be ...
+                                            | ... invisible but still be ...
+                                            | ... clicked)
 }                                           |
 ```
 
@@ -69,13 +71,15 @@
 ```
 {                                           |
     "type": "button_text",                  |
-    "topLeftX": <x>,                        |
-    "topLeftY": <y>,                        |
+    "topLeftX": <x>,                        | Distance x from parent
+    "topLeftY": <y>,                        | Distance y from parent
     "bgColor": [<r>, <g>, <b>, <a>],        | Background color
     "fgColor": [<r>, <g>, <b>, <a>],        | Text color
     "text": "<text>",                       |
-    "visible": <true/false>,                |
-    "clickable": <true/false>,              |
+    "visible": <true/false>,                | Is it draw to screen
+    "clickable": <true/false>,              | Is it clickable (it can be ...
+                                            | ... invisible but still be ...
+                                            | ... clicked)
 }                                           |
 ```
 
@@ -84,11 +88,12 @@
 ```
 {                                           |
     "type": "text_entry",                   |
-    "topLeftX": <x>,                        |
-    "topLeftY": <y>,                        |
+    "topLeftX": <x>,                        | Distance x from parent
+    "topLeftY": <y>,                        | Distance y from parent
     "bgColor": [<r>, <g>, <b>, <a>],        | Background color
     "fgColor": [<r>, <g>, <b>, <a>],        | Text color
-    "placeholder": "<text>",                |
+    "placeholder": "<text>",                | Text displayed before the ...
+                                            | ... client enter some text
 }                                           |
 ```
 
@@ -96,14 +101,15 @@
 
 ```
 {                                           |
-    "topLeftX": "<x>",                      |
-    "topLeftY": "<y>",                      |
+    "topLeftX": <x>,                        | Distance x from 0 (window)
+    "topLeftY": <y>,                        | Distance y from 0 (window)
     "bgColor": [<r>, <g>, <b>, <a>],        | Background color
     "fgColor": [<r>, <g>, <b>, <a>],        | Text color
     "text": "<text>",                       |
     "choices": {                            |
         "<key>": "<text>",                  | When the <text> is clicked ...
-        ...                                 | ... the key will be sent
+                                            | ... the key will be sent
+        ...                                 |
     }                                       |
 }                                           |
 ```
