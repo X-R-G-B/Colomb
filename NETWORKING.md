@@ -178,3 +178,47 @@
 |                                     |   }                                 |
 | ----------------------------------- | ----------------------------------- |
 ```
+
+## Game Level
+
+```
+|               Client                |                Server               |
+| ----------------------------------- | ----------------------------------- |
+|                                    <--  Ask game ui config hash           |
+|                                     |   {                                 |
+|                                     |    "type": "uiConfigHash"           |
+|                                     |    "name": "<configName>"           |
+|                                     |   }                                 |
+|                                     |                                     |
+|   Send ui config hash              -->                                    |
+|   {                                 |                                     |
+|    "type": "uiConfigHash",          |                                     |
+|    "name": "<configName>",          |                                     |
+|    "hash": "<hash>"                 |                                     |
+|   }                                 |                                     |
+| ----------------------------------- | ----------------------------------- |
+|                                    <--  Send ui config chunk              |
+|                                     |   {                                 |
+|                                     |    "type": "uiConfig",              |
+|                                     |    "name": "<configName>",          |
+|                                     |    "nbChunk": "<number of chunks>", |
+|                                     |    "chunkIndex": "<the nth chunk>", |
+|                                     |    "data": "<data>"                 | (this will need to be concatened ...
+|                                     |   }                                 | ... with the data of the others ...
+|                                     |                                     | ... chunks)
+| ----------------------------------- | ----------------------------------- |
+|   UI button update                 -->                                    |
+|   {                                 |                                     |
+|    "type": "uiUpdate_button",       |                                     |
+|    "element": "<identifier>",       |                                     |
+|    "clicked": true                  |                                     |
+|   }                                 |                                     |
+|                                     |                                     |
+|                                     |                                     |
+|                                     |                                     |
+|                                     |                                     |
+|                                     |                                     |
+|                                     |                                     |
+|                                     |                                     |
+|                                     |                                     |
+```
