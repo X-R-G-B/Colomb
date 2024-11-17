@@ -25,14 +25,22 @@
 
 ## Type structure
 
-`<type>`: div/buttonImage/buttonText/textEntry
-`<identifier>`: unique text identifier
-`<x>`: float, distance from parent
-`<y>`: float, distance from parent
-`<r>`: 0-255, red part of RGBA
-`<g>`: 0-255, green part of RGBA
-`<b>`: 0-255, blue part of RGBA
-`<a>`: 0-255, alpha part of RGBA
+- `<type>`:
+    div/buttonImage/buttonText/textEntry
+- `<identifier>`:
+    unique text identifier
+- `<x>`:
+    float, distance from parent
+- `<y>`:
+    float, distance from parent
+- `<r>`:
+    0-255, red part of RGBA
+- `<g>`:
+    0-255, green part of RGBA
+- `<b>`:
+    0-255, blue part of RGBA
+- `<a>`:
+    0-255, alpha part of RGBA
 
 ### div
 
