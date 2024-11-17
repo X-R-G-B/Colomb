@@ -203,22 +203,34 @@
 |                                     |    "name": "<configName>",          |
 |                                     |    "nbChunk": "<number of chunks>", |
 |                                     |    "chunkIndex": "<the nth chunk>", |
-|                                     |    "data": "<data>"                 | (this will need to be concatened ...
-|                                     |   }                                 | ... with the data of the others ...
-|                                     |                                     | ... chunks)
+|                                     |    "data": "<data>"                 | (this will need to be concatened with the data of the others chunks)
+|                                     |   }                                 |
 | ----------------------------------- | ----------------------------------- |
 |   UI button update                 -->                                    |
 |   {                                 |                                     |
 |    "type": "uiUpdate_button",       |                                     |
-|    "element": "<identifier>",       |                                     |
-|    "clicked": true                  |                                     |
+|    "id": "<identifier>",            |                                     |
 |   }                                 |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
-|                                     |                                     |
+| ----------------------------------- | ----------------------------------- |
+|   UI textEntry update              -->                                    |
+|   {                                 |                                     |
+|    "type": "uiUpdate_textEntry",    |                                     |
+|    "entry": "<text>"                |                                     |
+|   }                                 |                                     |
+| ----------------------------------- | ----------------------------------- |
+|   UI popup update                  -->                                    |
+|   {                                 |                                     |
+|    "type": "uiUpdate_popup",        |                                     |
+|    "id": "<identifier>",            |                                     |
+|    "choice": "<key>",               |                                     |
+|   }                                 |                                     |
+| ----------------------------------- | ----------------------------------- |
+|                                    <--  Change value of current config    | (only the config loaded in memory, not the original config file)
+|                                     |   {                                 |
+|                                     |    "type": "change",                |
+|                                     |    "id": "<identifier>",            |
+|                                     |    "key": "<key>",                  |
+|                                     |    "value": *value*                 |
+|                                     |   }                                 |
+| ----------------------------------- | ----------------------------------- |
 ```
