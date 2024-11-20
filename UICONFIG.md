@@ -7,13 +7,14 @@
         "<identifier>": "<url_path>",       |
         ...                                 |
     },                                      |
-    "page": {                               |
-        "<identifier>": {                   |
+    "page": [                               |
+        {                                   |
+            "id": "<identifier>",           |
             "type": "<type>",               |
             ...                             |
         },                                  |
         ...                                 |
-    },                                      |
+    ],                                      |
     "popups": {                             |
         "<identifier>": {                   |
             ...                             |
@@ -46,16 +47,18 @@
 
 ```
 {                                           |
+    "id": "<identifier>",                   |
     "type": "div",                          |
     "topLeftX": <x>,                        | Distance x from parent
     "topLeftY": <y>,                        | Distance y from parent
-    "childrens": {                          |
-        "<identifier>": {                   |
+    "childrens": [                          |
+        {                                   |
+            "id": "<identifier>",           |
             "type": "<type>",               |
             ...                             |
         },                                  |
         ...                                 |
-    }                                       |
+    ]                                       |
 }                                           |
 ```
 
@@ -63,6 +66,7 @@
 
 ```
 {                                           |
+    "id": "<identifier>",                   |
     "type": "button_image",                 |
     "topLeftX": <x>,                        | Distance x from parent
     "topLeftY": <y>,                        | Distance y from parent
@@ -78,6 +82,7 @@
 
 ```
 {                                           |
+    "id": "<identifier>",                   |
     "type": "button_text",                  |
     "topLeftX": <x>,                        | Distance x from parent
     "topLeftY": <y>,                        | Distance y from parent
@@ -95,6 +100,7 @@
 
 ```
 {                                           |
+    "id": "<identifier>",                   |
     "type": "text_entry",                   |
     "topLeftX": <x>,                        | Distance x from parent
     "topLeftY": <y>,                        | Distance y from parent
