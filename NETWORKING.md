@@ -215,6 +215,7 @@
 |   UI textEntry update              -->                                    |
 |   {                                 |                                     |
 |    "type": "uiUpdate_textEntry",    |                                     |
+|    "id": "<identifier>",            |                                     |
 |    "entry": "<text>"                |                                     |
 |   }                                 |                                     |
 | ----------------------------------- | ----------------------------------- |
@@ -222,7 +223,7 @@
 |   {                                 |                                     |
 |    "type": "uiUpdate_popup",        |                                     |
 |    "id": "<identifier>",            |                                     |
-|    "choice": "<key>",               |                                     |
+|    "choice": "<key>"                |                                     |
 |   }                                 |                                     |
 | ----------------------------------- | ----------------------------------- |
 |                                    <--  Change value of current config    | (only the config loaded in memory, not the original config file)

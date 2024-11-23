@@ -108,6 +108,9 @@
     "fgColor": [<r>, <g>, <b>, <a>],        | Text color
     "placeholder": "<text>",                | Text displayed before the ...
                                             | ... client enter some text
+    "visible": <true/false>,                | Is it draw to screen
+    "clickable": <true/false>,              | Is it clickable (it can't be ...
+                                            | ... clicked if not visible
 }                                           |
 ```
 

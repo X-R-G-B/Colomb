@@ -20,8 +20,8 @@ class UIConf {
     class IUI {
         public:
             virtual ~IUI() = default;
-            virtual void update(raylib::Window &window) = 0;
-            virtual void draw(raylib::Window &window) = 0;
+            virtual void update(raylib::Window &window, float parentX = 0, float parentY = 0) = 0;
+            virtual void draw(raylib::Window &window, float parentX = 0, float parentY = 0) = 0;
             virtual const std::string &getId() const = 0;
     };
 
@@ -29,16 +29,16 @@ class UIConf {
         public:
             UIDiv();
 
-            void update(raylib::Window &window) override;
-            void draw(raylib::Window &window) override;
+            void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
+            void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             const std::string &getId() const override;
 
             void addChildren(std::shared_ptr<IUI> children);
 
         private:
             std::string _identifier;
-            float topLeftX;
-            float topLeftY;
+            float _topLeftX;
+            float _topLeftY;
             std::vector<std::shared_ptr<IUI>> _childrens;
             std::unordered_map<std::string, int> _childrensIndexes;
     };
@@ -47,8 +47,8 @@ class UIConf {
         public:
             UIButtonImage();
 
-            void update(raylib::Window &window) override;
-            void draw(raylib::Window &window) override;
+            void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
+            void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             const std::string &getId() const override;
 
         private:
@@ -56,6 +56,7 @@ class UIConf {
             float _topLeftX;
             float _topLeftY;
             std::shared_ptr<Asset> _image;
+            raylib::Texture _texture;
             bool _visible;
             bool _clickable;
     };
@@ -64,8 +65,8 @@ class UIConf {
         public:
             UIButtonText();
 
-            void update(raylib::Window &window) override;
-            void draw(raylib::Window &window) override;
+            void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
+            void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             const std::string &getId() const override;
 
         private:
@@ -77,14 +78,15 @@ class UIConf {
             std::string _text;
             bool _visible;
             bool _clickable;
+            raylib::Text _textR;
     };
 
     class UITextEntry : public IUI {
         public:
             UITextEntry();
 
-            void update(raylib::Window &window) override;
-            void draw(raylib::Window &window) override;
+            void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
+            void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             const std::string &getId() const override;
 
         private:
@@ -94,14 +96,18 @@ class UIConf {
             raylib::Color _bgColor;
             raylib::Color _fgColor;
             std::string _placeholder;
+            bool _visible;
+            bool _clickable;
+            raylib::Text _textR;
+            bool _wasClicked;
     };
 
     class UIPopUp : public IUI {
         public:
             UIPopUp();
 
-            void update(raylib::Window &window) override;
-            void draw(raylib::Window &window) override;
+            void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
+            void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             const std::string &getId() const override;
 
         private:
@@ -113,6 +119,8 @@ class UIConf {
             std::string _text;
             std::map<std::string, std::string> _choices;
             bool _visible;
+            raylib::Text _textR;
+            std::vector<raylib::Text> _choicesR;
     };
 
     public:
