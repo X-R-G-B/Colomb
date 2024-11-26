@@ -105,6 +105,7 @@ class UIConf {
     class UIPopUp : public IUI {
         public:
             UIPopUp();
+            UIPopUp(const nlohmann::json &config);
 
             void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;

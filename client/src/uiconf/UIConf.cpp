@@ -1,9 +1,70 @@
+#include <memory>
+#include <stdexcept>
 #include "INetwork.hpp"
 #include "UIConf.hpp"
 
 UIConf::UIConf(const std::string &file):
     _json(nlohmann::json::parse(file))
 {
+    if (!_json.contains("name") || !_json.at("name").is_string()) {
+        throw std::invalid_argument("`name` not in json or bad format (string expected)");
+    }
+    _name = _json.at("name").template get<std::string>();
+    if (!_json.contains("assets") || !_json.at("assets").is_object()) {
+        throw std::invalid_argument("`assets` not in json or bad format (object expected)");
+    }
+    for (const auto &[key, value] : _json.at("assets").items()) {
+        if (!value.is_string()) {
+            throw std::invalid_argument("in asset, `" + key + "` bad format (string expected)");
+        }
+        _assets[key] = Asset(key, value.template get<std::string>());
+    }
+    if (!_json.contains("page") || !_json.at("page").is_array()) {
+        throw std::invalid_argument("`page` not in json or bad format (array expected)");
+    }
+    for (const auto &elem : _json.at("page")) {
+        if (!elem.is_object()) {
+            throw std::invalid_argument("in page, bad format (object expected)");
+        }
+        if (!elem.contains("type") || !elem.contains("id") || !elem.at("type").is_string() || !elem.at("id").is_string()) {
+            throw std::invalid_argument("in page, type|id: not in json or bad format (expected string)");
+        }
+        const auto uiType = elem.at("type").template get<std::string>();
+        const auto id = elem.at("id").template get<std::string>();
+        if (uiType == "div") {
+            _page.push_back(std::make_shared<UIDiv>(elem));
+            _pageIndexes[id] = _page.size() - 1;
+        } else if (uiType == "buttonImage") {
+            _page.push_back(std::make_shared<UIButtonImage>(elem));
+            _pageIndexes[id] = _page.size() - 1;
+        } else if (uiType == "buttonText") {
+            _page.push_back(std::make_shared<UIButtonText>(elem));
+            _pageIndexes[id] = _page.size() - 1;
+        } else if (uiType == "textEntry") {
+            _page.push_back(std::make_shared<UITextEntry>(elem));
+            _pageIndexes[id] = _page.size() - 1;
+        } else {
+            throw std::invalid_argument("in page, type `" + uiType + "` is unknown");
+        }
+    }
+    if (!_json.contains("popups") || !_json.at("popups").is_object()) {
+        throw std::invalid_argument("`popups` not in json or bad format (object expected)");
+    }
+    for (const auto &[key, value] : _json.at("popups").items()) {
+        if (!value.is_object()) {
+            throw std::invalid_argument("in page, bad format (object expected)");
+        }
+        if (!value.contains("type") || !value.contains("id") || !value.at("type").is_string() || !value.at("id").is_string()) {
+            throw std::invalid_argument("in popups, type|id: not in json or bad format (expected string)");
+        }
+        const auto uiType = value.at("type").template get<std::string>();
+        const auto id = value.at("id").template get<std::string>();
+        if (uiType == "popups") {
+            _popups[key] = std::make_shared<UIPopUp>(value);
+        } else {
+            throw std::invalid_argument("in popups, type `" + uiType + "` is unknown");
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
