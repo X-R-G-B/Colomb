@@ -15,6 +15,7 @@ class UIConf {
 
             std::string _identifier;
             std::string _urlPath;
+            std::string _path;
     };
 
     class IUI {
@@ -28,6 +29,7 @@ class UIConf {
     class UIDiv : public IUI {
         public:
             UIDiv();
+            UIDiv(const nlohmann::json &config, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets);
 
             void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
@@ -46,6 +48,7 @@ class UIConf {
     class UIButtonImage : public IUI {
         public:
             UIButtonImage();
+            UIButtonImage(const nlohmann::json &config, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets);
 
             void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
@@ -64,6 +67,7 @@ class UIConf {
     class UIButtonText : public IUI {
         public:
             UIButtonText();
+            UIButtonText(const nlohmann::json &config);
 
             void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
@@ -84,6 +88,7 @@ class UIConf {
     class UITextEntry : public IUI {
         public:
             UITextEntry();
+            UITextEntry(const nlohmann::json &config);
 
             void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
@@ -105,7 +110,7 @@ class UIConf {
     class UIPopUp : public IUI {
         public:
             UIPopUp();
-            UIPopUp(const nlohmann::json &config);
+            UIPopUp(const std::string &id, const nlohmann::json &config);
 
             void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
             void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
@@ -129,7 +134,7 @@ class UIConf {
 
     private:
         std::string _name;
-        std::unordered_map<std::string, Asset> _assets;
+        std::unordered_map<std::string, std::shared_ptr<Asset>> _assets;
         std::vector<std::shared_ptr<IUI>> _page;
         std::unordered_map<std::string, int> _pageIndexes;
         std::unordered_map<std::string, std::shared_ptr<UIPopUp>> _popups;
