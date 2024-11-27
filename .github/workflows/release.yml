@@ -275,7 +275,7 @@ jobs:
 
   release-client-windows:
     runs-on: windows-latest
-    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar]
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar, httplib-to-tar]
 
     steps:
       - name: Checkout
@@ -320,7 +320,7 @@ jobs:
 
   release-client-linux:
     runs-on: ubuntu-latest
-    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar]
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar, httplib-to-tar]
 
     steps:
       - name: Checkout
@@ -360,7 +360,7 @@ jobs:
 
   release-client-macos:
     runs-on: macos-latest
-    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar]
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar, httplib-to-tar]
 
     steps:
       - name: Checkout
@@ -404,7 +404,7 @@ jobs:
 
   release-server-linux:
     runs-on: ubuntu-latest
-    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar]
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar, httplib-to-tar]
 
     steps:
       - name: Checkout
@@ -444,7 +444,7 @@ jobs:
 
   release-server-macos:
     runs-on: macos-latest
-    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar]
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar, httplib-to-tar]
 
     steps:
       - name: Checkout
@@ -484,7 +484,7 @@ jobs:
 
   release-server-windows:
     runs-on: windows-latest
-    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar]
+    needs: [release-create, date-to-tar, raylib-to-tar, raylibcpp-to-tar, enet-to-tar, zstd-to-tar, httplib-to-tar]
 
     steps:
       - name: Checkout
