@@ -134,6 +134,9 @@ jobs:
         cd httplib-repo || exit 14
         git checkout ${{ env.HTTPLIB_TAG }}
         rm -rf .git
+        rm CMakeLists.txt
+        mkdir include
+        mv httplib.h include/httplib.h
         cd ..
 
     - name: To Tar
