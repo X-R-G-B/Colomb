@@ -149,6 +149,7 @@ class UIConf {
                 void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 const std::string &getId() const override;
+                bool getVisible() const;
 
             private:
                 std::string _identifier;
@@ -167,6 +168,8 @@ class UIConf {
         UIConf(const std::string &identifier);
 
         bool modify(const std::string &identifier, const std::string &key, const nlohmann::json &value);
+        void update(raylib::Window &window);
+        void draw(raylib::Window &window);
 
         static std::string toFile(const std::string &identifier);
         static std::string hash(const std::string &identifier);

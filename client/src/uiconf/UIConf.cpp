@@ -171,6 +171,33 @@ bool UIConf::modify(const std::string &identifier, const std::string &key, const
     return false;
 }
 
+void UIConf::update(raylib::Window &window)
+{
+    bool inPopup = false;
+
+    for (const auto &[_, elem] : _popups) {
+        if (elem->getVisible()) {
+            inPopup = true;
+            elem->update(window);
+        }
+    }
+    if (!inPopup) {
+        for (const auto &elem : _page) {
+            elem->update(window);
+        }
+    }
+}
+
+void UIConf::draw(raylib::Window &window)
+{
+    for (const auto &[_, elem] : _popups) {
+        elem->draw(window);
+    }
+    for (const auto &elem : _page) {
+        elem->draw(window);
+    }
+}
+
 std::string UIConf::toFile(const std::string &identifier)
 {
     const std::string file = PathResolver::resolve("assets/uiconf/" + identifier);
@@ -860,6 +887,11 @@ void UIConf::UIPopUp::draw(raylib::Window & /* unused */, float parentX, float p
 const std::string &UIConf::UIPopUp::getId() const
 {
     return _identifier;
+}
+
+bool UIConf::UIPopUp::getVisible() const
+{
+    return _visible;
 }
 
 // ---------------------------------------------------------------------------

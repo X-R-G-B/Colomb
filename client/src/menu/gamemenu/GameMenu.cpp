@@ -3,7 +3,7 @@
 #include "INetwork.hpp"
 #include "UIConf.hpp"
 
-GameMenu::GameMenu(raylib::Window &window)
+GameMenu::GameMenu(raylib::Window & /* unused */)
 {
 }
 
@@ -67,12 +67,21 @@ void GameMenu::update(raylib::Window &window)
             _uiConf         = std::make_shared<UIConf>(UIConf::toFile(name));
         }
     }
+    if (_uiConf) {
+        _uiConf->update(window);
+    }
 }
 
 void GameMenu::draw(raylib::Window &window)
 {
+    if (_uiConf) {
+        _uiConf->draw(window);
+    }
 }
 
-void GameMenu::free(raylib::Window &window)
+void GameMenu::free(raylib::Window & /* unused */)
 {
+    if (_uiConf) {
+        _uiConf.reset();
+    }
 }
