@@ -21,6 +21,7 @@ class UIConf {
         class IUI {
             public:
                 virtual ~IUI()                                                                    = default;
+                virtual bool modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets) = 0;
                 virtual void update(raylib::Window &window, float parentX = 0, float parentY = 0) = 0;
                 virtual void draw(raylib::Window &window, float parentX = 0, float parentY = 0)   = 0;
                 virtual const std::string &getId() const                                          = 0;
@@ -33,6 +34,7 @@ class UIConf {
                     const nlohmann::json &config,
                     const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets);
 
+                bool modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets) override;
                 void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 const std::string &getId() const override;
@@ -54,6 +56,7 @@ class UIConf {
                     const nlohmann::json &config,
                     const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets);
 
+                bool modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets) override;
                 void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 const std::string &getId() const override;
@@ -73,6 +76,7 @@ class UIConf {
                 UIButtonText();
                 UIButtonText(const nlohmann::json &config);
 
+                bool modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets) override;
                 void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 const std::string &getId() const override;
@@ -94,6 +98,7 @@ class UIConf {
                 UITextEntry();
                 UITextEntry(const nlohmann::json &config);
 
+                bool modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets) override;
                 void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 const std::string &getId() const override;
@@ -116,6 +121,7 @@ class UIConf {
                 UIPopUp();
                 UIPopUp(const std::string &id, const nlohmann::json &config);
 
+                bool modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets) override;
                 void update(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 void draw(raylib::Window &window, float parentX = 0, float parentY = 0) override;
                 const std::string &getId() const override;
@@ -134,7 +140,14 @@ class UIConf {
         };
 
     public:
-        UIConf(const std::string &file);
+        UIConf(const std::string &identifier);
+
+        bool modify(const std::string &identifier, const std::string &key, const nlohmann::json &value);
+
+        static std::string toFile(const std::string &identifier);
+        static std::string hash(const std::string &identifier);
+        static bool appendString(const std::string &identifier, const std::string &data);
+        static bool writeString(const std::string &identifier, const std::string &data);
 
     private:
         std::string _name;

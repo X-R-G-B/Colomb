@@ -1,7 +1,9 @@
 #pragma once
 
+#include <memory>
 #include "raylib-cpp.hpp"
 #include "IMenu.hpp"
+#include "UIConf.hpp"
 
 class GameMenu : public IMenu {
     public:
@@ -11,4 +13,5 @@ class GameMenu : public IMenu {
         void free(raylib::Window &window);
 
     private:
+        std::shared_ptr<UIConf> _uiConf;
 };

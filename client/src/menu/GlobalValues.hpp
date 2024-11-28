@@ -10,4 +10,5 @@ class GlobalValues {
 
         std::string _roomName = "";
         std::string _username = "";
+        std::string _gameName = "";
 };

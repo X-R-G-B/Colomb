@@ -1,4 +1,5 @@
 #include "UIConf.hpp"
+#include <filesystem>
 #include <fstream>
 #include <memory>
 #include <optional>
@@ -7,6 +8,30 @@
 #include "Logger.hpp"
 #include "PathResolver.hpp"
 #include "httplib.h"
+
+template<typename T>
+std::optional<T> json_get(const nlohmann::json &json);
+template<>
+std::optional<raylib::Color> json_get(const nlohmann::json &json)
+{
+    if (!json.is_array()) {
+        return std::nullopt;
+    }
+    std::vector<int> vec;
+    for (const auto &elem : json) {
+        if (vec.size() >= 4) {
+            return std::nullopt;
+        }
+        if (!elem.is_number()) {
+            return std::nullopt;
+        }
+        vec.push_back(elem.template get<int>());
+    }
+    if (vec.size() != 4) {
+        return std::nullopt;
+    }
+    return raylib::Color(vec[0], vec[1], vec[2], vec[3]);
+}
 
 template <typename T>
 std::optional<T> json_get(const nlohmann::json &json, const std::string &key);
@@ -60,23 +85,7 @@ std::optional<raylib::Color> json_get<raylib::Color>(const nlohmann::json &json,
     if (!json.contains(key)) {
         return std::nullopt;
     }
-    if (!json.at(key).is_array()) {
-        return std::nullopt;
-    }
-    std::vector<int> vec;
-    for (const auto &elem : json.at(key)) {
-        if (vec.size() >= 4) {
-            return std::nullopt;
-        }
-        if (!elem.is_number()) {
-            return std::nullopt;
-        }
-        vec.push_back(elem.template get<int>());
-    }
-    if (vec.size() != 4) {
-        return std::nullopt;
-    }
-    return raylib::Color(vec[0], vec[1], vec[2], vec[3]);
+    return json_get<raylib::Color>(json.at(key));
 }
 
 UIConf::UIConf(const std::string &file) : _json(nlohmann::json::parse(file))
@@ -144,6 +153,73 @@ UIConf::UIConf(const std::string &file) : _json(nlohmann::json::parse(file))
     }
 }
 
+bool UIConf::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value)
+{
+    auto found = false;
+
+    if (_pageIndexes.contains(identifier)) {
+        return _page[_pageIndexes[identifier]]->modify(identifier, key, value, _assets);
+    }
+    for (const auto &elem : _page) {
+        if (typeid(UIConf::UIDiv).name() == typeid(elem).name()) {
+            found = elem->modify(identifier, key, value, _assets);
+        }
+        if (found == true) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string UIConf::toFile(const std::string &identifier)
+{
+    const std::string file = PathResolver::resolve("assets/uiconf/" + identifier);
+    std::filesystem::path path(file);
+
+    if (std::filesystem::exists(path.parent_path())) {
+        std::runtime_error("folder uiconf does not exist");
+    }
+    return file;
+}
+
+std::string UIConf::hash(const std::string &identifier)
+{
+    std::ifstream file(UIConf::toFile(identifier));
+    std::string all;
+    std::string line;
+
+    if (file.is_open() && !file.bad()) {
+        while (std::getline(file, all)) {
+            all += line;
+        }
+    }
+    const auto hashed = std::hash<std::string>{}(all);
+    return std::to_string(hashed);
+}
+
+bool UIConf::appendString(const std::string &identifier, const std::string &data)
+{
+    std::ofstream file;
+
+    file.open(UIConf::toFile(identifier), std::ios_base::app);
+    if (file.is_open() && !file.bad()) {
+        file << data;
+        return true;
+    }
+    return false;
+}
+
+bool UIConf::writeString(const std::string &identifier, const std::string &data)
+{
+    std::ofstream file(UIConf::toFile(identifier));
+
+    if (file.is_open() && !file.bad()) {
+        file << data;
+        return true;
+    }
+    return false;
+}
+
 // ---------------------------------------------------------------------------
 //                                                                       UIDiv
 // ---------------------------------------------------------------------------
@@ -197,6 +273,35 @@ UIConf::UIDiv::UIDiv(
             throw std::invalid_argument("in childrens, type `" + uiType + "` is unknown");
         }
     }
+}
+
+bool UIConf::UIDiv::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets)
+{
+    auto found = false;
+
+    if (identifier == _identifier) {
+        if (key == "topLeftX" && value.is_number_float()) {
+            _topLeftX = value.template get<float>();
+        } else if (key == "topLeftY" && value.is_number_float()) {
+            _topLeftY = value.template get<float>();
+        } else {
+            Logger::error("UIConf::UIDiv::modify : {" + identifier + "}: unknown key {" + key + "}");
+            return false;
+        }
+        return true;
+    }
+    if (_childrensIndexes.contains(identifier)) {
+        return _childrens[_childrensIndexes[identifier]]->modify(identifier, key, value, assets);
+    }
+    for (const auto &elem : _childrens) {
+        if (typeid(UIConf::UIDiv).name() == typeid(elem).name()) {
+            found = elem->modify(identifier, key, value, assets);
+        }
+        if (found == true) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void UIConf::UIDiv::update(raylib::Window &window, float parentX, float parentY)
@@ -263,6 +368,30 @@ UIConf::UIButtonImage::UIButtonImage(
         throw std::runtime_error("`clickable` not in json or bad format (bool expected)");
     }
     _clickable = clickable.value();
+}
+
+bool UIConf::UIButtonImage::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets)
+{
+    if (identifier == _identifier) {
+        if (key == "topLeftX" && value.is_number_float()) {
+            _topLeftX = value.template get<float>();
+        } else if (key == "topLeftY" && value.is_number_float()) {
+            _topLeftY = value.template get<float>();
+        } else if (key == "image" && value.is_string()) {
+            const auto image = value.template get<std::string>();
+            _image = assets.at(image);
+            _texture.Load(_image->_path);
+        } else if (key == "visible" && value.is_boolean()) {
+            _visible = value.template get<bool>();
+        } else if (key == "clickable" && value.is_boolean()) {
+            _clickable = value.template get<bool>();
+        } else {
+            Logger::error("UIConf::UIButtonImage::modify : {" + identifier + "}: unknown key {" + key + "}");
+            return false;
+        }
+        return true;
+    }
+    return false;
 }
 
 void UIConf::UIButtonImage::update(raylib::Window &window, float parentX, float parentY)
@@ -348,6 +477,40 @@ UIConf::UIButtonText::UIButtonText(const nlohmann::json &config)
         throw std::runtime_error("`clickable` not in json or bad format (bool expected)");
     }
     _clickable = clickable.value();
+}
+
+bool UIConf::UIButtonText::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> & /* unused */)
+{
+    if (identifier == _identifier) {
+        if (key == "topLeftX" && value.is_number_float()) {
+            _topLeftX = value.template get<float>();
+        } else if (key == "topLeftY" && value.is_number_float()) {
+            _topLeftY = value.template get<float>();
+        } else if (key == "text" && value.is_string()) {
+            _text = value.template get<std::string>();
+        } else if (key == "bgColor") {
+            const auto bgColor = json_get<raylib::Color>(value);
+            if (!bgColor.has_value()) {
+                return false;
+            }
+            _bgColor = bgColor.value();
+        } else if (key == "fgColor") {
+            const auto fgColor = json_get<raylib::Color>(value);
+            if (!fgColor.has_value()) {
+                return false;
+            }
+            _fgColor = fgColor.value();
+        } else if (key == "visible" && value.is_boolean()) {
+            _visible = value.template get<bool>();
+        } else if (key == "clickable" && value.is_boolean()) {
+            _clickable = value.template get<bool>();
+        } else {
+            Logger::error("UIConf::UIButtonText::modify : {" + identifier + "}: unknown key {" + key + "}");
+            return false;
+        }
+        return true;
+    }
+    return false;
 }
 
 void UIConf::UIButtonText::update(raylib::Window &window, float parentX, float parentY)
@@ -436,6 +599,40 @@ UIConf::UITextEntry::UITextEntry(const nlohmann::json &config)
         throw std::runtime_error("`clickable` not in json or bad format (bool expected)");
     }
     _clickable = clickable.value();
+}
+
+bool UIConf::UITextEntry::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> & /* unused */)
+{
+    if (identifier == _identifier) {
+        if (key == "topLeftX" && value.is_number_float()) {
+            _topLeftX = value.template get<float>();
+        } else if (key == "topLeftY" && value.is_number_float()) {
+            _topLeftY = value.template get<float>();
+        } else if (key == "placeholder" && value.is_string()) {
+            _placeholder = value.template get<std::string>();
+        } else if (key == "bgColor") {
+            const auto bgColor = json_get<raylib::Color>(value);
+            if (!bgColor.has_value()) {
+                return false;
+            }
+            _bgColor = bgColor.value();
+        } else if (key == "fgColor") {
+            const auto fgColor = json_get<raylib::Color>(value);
+            if (!fgColor.has_value()) {
+                return false;
+            }
+            _fgColor = fgColor.value();
+        } else if (key == "visible" && value.is_boolean()) {
+            _visible = value.template get<bool>();
+        } else if (key == "clickable" && value.is_boolean()) {
+            _clickable = value.template get<bool>();
+        } else {
+            Logger::error("UIConf::UITextEntry::modify : {" + identifier + "}: unknown key {" + key + "}");
+            return false;
+        }
+        return true;
+    }
+    return false;
 }
 
 void UIConf::UITextEntry::update(raylib::Window &window, float parentX, float parentY)
@@ -547,11 +744,52 @@ UIConf::UIPopUp::UIPopUp(const std::string &id, const nlohmann::json &config)
     }
 }
 
+bool UIConf::UIPopUp::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> & /* unused */)
+{
+    if (identifier == _identifier) {
+        if (key == "topLeftX" && value.is_number_float()) {
+            _topLeftX = value.template get<float>();
+        } else if (key == "topLeftY" && value.is_number_float()) {
+            _topLeftY = value.template get<float>();
+        } else if (key == "text" && value.is_string()) {
+            _text = value.template get<std::string>();
+        } else if (key == "bgColor") {
+            const auto bgColor = json_get<raylib::Color>(value);
+            if (!bgColor.has_value()) {
+                return false;
+            }
+            _bgColor = bgColor.value();
+        } else if (key == "fgColor") {
+            const auto fgColor = json_get<raylib::Color>(value);
+            if (!fgColor.has_value()) {
+                return false;
+            }
+            _fgColor = fgColor.value();
+        } else if (key == "choices") {
+            _choices.clear();
+            for (const auto &[key, value] : value.items()) {
+                if (!value.is_string()) {
+                    return false;
+                }
+                _choices[key] = value.template get<std::string>();
+            }
+        } else if (key == "visible" && value.is_boolean()) {
+            _visible = value.template get<bool>();
+        } else {
+            Logger::error("UIConf::UIPopUp::modify : {" + identifier + "}: unknown key {" + key + "}");
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
 void UIConf::UIPopUp::update(raylib::Window &window, float parentX, float parentY)
 {
     if (_text != _textR.text) {
         _textR.text = _text;
     }
+    // TODO: create _choicesR
     if (!window.IsFocused()) {
         return;
     }

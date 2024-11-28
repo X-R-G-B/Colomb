@@ -186,7 +186,7 @@
 | ----------------------------------- | ----------------------------------- |
 |                                    <--  Ask game ui config hash           |
 |                                     |   {                                 |
-|                                     |    "type": "uiConfigHash"           |
+|                                     |    "type": "uiConfigHash",          |
 |                                     |    "name": "<configName>"           |
 |                                     |   }                                 |
 |                                     |                                     |
@@ -201,9 +201,22 @@
 |                                     |   {                                 |
 |                                     |    "type": "uiConfig",              |
 |                                     |    "name": "<configName>",          |
-|                                     |    "nbChunk": "<number of chunks>", |
-|                                     |    "chunkIndex": "<the nth chunk>", |
+|                                     |    "nbChunk": <number of chunks>,   |
+|                                     |    "chunkIndex": <the nth chunk>,   |
 |                                     |    "data": "<data>"                 | (this will need to be concatened with the data of the others chunks)
+|                                     |   }                                 |
+|   Send receive of all chunk        -->                                    |
+|   (only when chunkIndex == nbChunk) |                                     |
+|   {                                 |                                     |
+|    "type": "uiConfig",              |                                     |
+|    "name": "<configName>",          |                                     |
+|    "nbChunk": "<number of chunk>"   |                                     |
+|   }                                 |                                     |
+| ----------------------------------- | ----------------------------------- |
+|                                    <--  Set game config identifier        |
+|                                     |   {                                 |
+|                                     |    "type": "setConfig",             |
+|                                     |    "name": "<configName>"           |
 |                                     |   }                                 |
 | ----------------------------------- | ----------------------------------- |
 |   UI button update                 -->                                    |
