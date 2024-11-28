@@ -9,9 +9,9 @@
 #include "PathResolver.hpp"
 #include "httplib.h"
 
-template<typename T>
+template <typename T>
 std::optional<T> json_get(const nlohmann::json &json);
-template<>
+template <>
 std::optional<raylib::Color> json_get(const nlohmann::json &json)
 {
     if (!json.is_array()) {
@@ -193,7 +193,7 @@ std::string UIConf::hash(const std::string &identifier)
             all += line;
         }
     }
-    const auto hashed = std::hash<std::string>{}(all);
+    const auto hashed = std::hash<std::string> {}(all);
     return std::to_string(hashed);
 }
 
@@ -275,7 +275,11 @@ UIConf::UIDiv::UIDiv(
     }
 }
 
-bool UIConf::UIDiv::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets)
+bool UIConf::UIDiv::modify(
+    const std::string &identifier,
+    const std::string &key,
+    const nlohmann::json &value,
+    const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets)
 {
     auto found = false;
 
@@ -370,7 +374,11 @@ UIConf::UIButtonImage::UIButtonImage(
     _clickable = clickable.value();
 }
 
-bool UIConf::UIButtonImage::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets)
+bool UIConf::UIButtonImage::modify(
+    const std::string &identifier,
+    const std::string &key,
+    const nlohmann::json &value,
+    const std::unordered_map<std::string, std::shared_ptr<Asset>> &assets)
 {
     if (identifier == _identifier) {
         if (key == "topLeftX" && value.is_number_float()) {
@@ -379,14 +387,15 @@ bool UIConf::UIButtonImage::modify(const std::string &identifier, const std::str
             _topLeftY = value.template get<float>();
         } else if (key == "image" && value.is_string()) {
             const auto image = value.template get<std::string>();
-            _image = assets.at(image);
+            _image           = assets.at(image);
             _texture.Load(_image->_path);
         } else if (key == "visible" && value.is_boolean()) {
             _visible = value.template get<bool>();
         } else if (key == "clickable" && value.is_boolean()) {
             _clickable = value.template get<bool>();
         } else {
-            Logger::error("UIConf::UIButtonImage::modify : {" + identifier + "}: unknown key {" + key + "}");
+            Logger::error(
+                "UIConf::UIButtonImage::modify : {" + identifier + "}: unknown key {" + key + "}");
             return false;
         }
         return true;
@@ -479,7 +488,11 @@ UIConf::UIButtonText::UIButtonText(const nlohmann::json &config)
     _clickable = clickable.value();
 }
 
-bool UIConf::UIButtonText::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> & /* unused */)
+bool UIConf::UIButtonText::modify(
+    const std::string &identifier,
+    const std::string &key,
+    const nlohmann::json &value,
+    const std::unordered_map<std::string, std::shared_ptr<Asset>> & /* unused */)
 {
     if (identifier == _identifier) {
         if (key == "topLeftX" && value.is_number_float()) {
@@ -601,7 +614,11 @@ UIConf::UITextEntry::UITextEntry(const nlohmann::json &config)
     _clickable = clickable.value();
 }
 
-bool UIConf::UITextEntry::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> & /* unused */)
+bool UIConf::UITextEntry::modify(
+    const std::string &identifier,
+    const std::string &key,
+    const nlohmann::json &value,
+    const std::unordered_map<std::string, std::shared_ptr<Asset>> & /* unused */)
 {
     if (identifier == _identifier) {
         if (key == "topLeftX" && value.is_number_float()) {
@@ -744,7 +761,11 @@ UIConf::UIPopUp::UIPopUp(const std::string &id, const nlohmann::json &config)
     }
 }
 
-bool UIConf::UIPopUp::modify(const std::string &identifier, const std::string &key, const nlohmann::json &value, const std::unordered_map<std::string, std::shared_ptr<Asset>> & /* unused */)
+bool UIConf::UIPopUp::modify(
+    const std::string &identifier,
+    const std::string &key,
+    const nlohmann::json &value,
+    const std::unordered_map<std::string, std::shared_ptr<Asset>> & /* unused */)
 {
     if (identifier == _identifier) {
         if (key == "topLeftX" && value.is_number_float()) {

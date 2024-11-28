@@ -139,7 +139,7 @@ void GamesMode::clearGamesMode()
 
 void GamesMode::setCurrentGameMode(const std::string &gameMode)
 {
-    _currentGameMode = gameMode;
+    _currentGameMode       = gameMode;
     globalValues._gameName = gameMode;
     _textEntries["game_name"]->text().assign(gameMode);
     _textEntries["game_name"]->setRectSizeToTextSize();

@@ -21,18 +21,21 @@ void GameMenu::update(raylib::Window &window)
             }
             const auto name = message.at("name").template get<std::string>();
             network.send({
-                {"type", "uiConfigHash"},
-                {"name", name},
+                {"type", "uiConfigHash"    },
+                {"name", name              },
                 {"hash", UIConf::hash(name)},
             });
         } else if (messageType == "uiConfig") {
-            if (!message.contains("name") || !message.contains("nbChunk") || !message.contains("chunkIndex") || !message.contains("data") || !message.at("name").is_string() || !message.at("nbChunk").is_number() || !message.at("chunkIndex").is_number() || !message.at("data").is_string()) {
+            if (!message.contains("name") || !message.contains("nbChunk") || !message.contains("chunkIndex")
+                || !message.contains("data") || !message.at("name").is_string()
+                || !message.at("nbChunk").is_number() || !message.at("chunkIndex").is_number()
+                || !message.at("data").is_string()) {
                 continue;
             }
-            const auto name = message.at("name").template get<std::string>();
-            const auto nbChunk = message.at("nbChunk").template get<int>();
+            const auto name       = message.at("name").template get<std::string>();
+            const auto nbChunk    = message.at("nbChunk").template get<int>();
             const auto chunkIndex = message.at("chunkIndex").template get<int>();
-            const auto data = message.at("data").template get<std::string>();
+            const auto data       = message.at("data").template get<std::string>();
             if (chunkIndex == 0) {
                 UIConf::writeString(name, data);
             } else {
@@ -40,17 +43,18 @@ void GameMenu::update(raylib::Window &window)
             }
             if (chunkIndex == nbChunk - 1) {
                 network.send({
-                    {"type", "uiConfig"},
-                    {"name", name},
-                    {"nbChunk", nbChunk},
+                    {"type",    "uiConfig"},
+                    {"name",    name      },
+                    {"nbChunk", nbChunk   },
                 });
             }
         } else if (messageType == "change") {
-            if (!message.contains("id") || !message.contains("key") || !message.contains("value") || !message.at("id").is_string() || !message.at("key").is_string()) {
+            if (!message.contains("id") || !message.contains("key") || !message.contains("value")
+                || !message.at("id").is_string() || !message.at("key").is_string()) {
                 continue;
             }
-            const auto id = message.at("id").template get<std::string>();
-            const auto key = message.at("key").template get<std::string>();
+            const auto id    = message.at("id").template get<std::string>();
+            const auto key   = message.at("key").template get<std::string>();
             const auto value = message.at("value").template get<std::string>();
             if (_uiConf) {
                 _uiConf->modify(id, key, value);
@@ -60,7 +64,7 @@ void GameMenu::update(raylib::Window &window)
                 continue;
             }
             const auto name = message.at("name").template get<std::string>();
-            _uiConf = std::make_shared<UIConf>(UIConf::toFile(name));
+            _uiConf         = std::make_shared<UIConf>(UIConf::toFile(name));
         }
     }
 }
