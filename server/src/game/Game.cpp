@@ -1,14 +1,9 @@
-#include "Game.hpp"
 #include <algorithm>
 #include <memory>
+#include "Game.hpp"
 #include "INetwork.hpp"
 #include "Logger.hpp"
-
-Game::Player::Player(std::shared_ptr<INetwork::IPeer> peer, const std::string &username)
-    : _peer(peer),
-      _username(username)
-{
-}
+#include "Catan.hpp"
 
 Game::Game()
 {
@@ -24,6 +19,10 @@ void Game::update()
 {
     if (_players.size() == 0) {
         _isFinished = true;
+    }
+    if (this->isStarted() && _game) {
+        _game->update();
+        return;
     }
     for (auto &[key, player] : _players) {
         while (network.hasPacket(player._peer)) {
@@ -153,6 +152,9 @@ void Game::update()
 
 bool Game::isFinished()
 {
+    if (_isStarted && _game) {
+        return _game->isFinished();
+    }
     return _isFinished;
 }
 
@@ -216,6 +218,9 @@ bool Game::startGame(const Player &player)
     if (_selectedGame.length() == 0) {
         return false;
     }
+    if (std::find(_availableGameName.begin(), _availableGameName.end(), _selectedGame) == _availableGameName.end()) {
+        return false;
+    }
     if (player._peer->getId() != _keyOwner) {
         return false;
     }
@@ -224,5 +229,13 @@ bool Game::startGame(const Player &player)
             return false;
         }
     }
+    if (_selectedGame == "Catan") {
+        _game = std::make_unique<Catan>();
+        _game->init(_players);
+    } else {
+        Logger::error("GAME: unknow game name");
+        return false;
+    }
+    _isStarted = true;
     return true;
 }

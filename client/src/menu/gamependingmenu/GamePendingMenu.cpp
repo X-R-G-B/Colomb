@@ -196,6 +196,7 @@ void GamePendingMenu::update(raylib::Window &window)
                     continue;
                 }
             }
+            _gamesMode.setCurrentGameMode(game);
             menuState.setState(M_GAMEMENU);
             return;
         }

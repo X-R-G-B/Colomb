@@ -1,20 +1,12 @@
 #pragma once
 
 #include <memory>
-#include <unordered_map>
 #include "INetwork.hpp"
+#include "IGame.hpp"
+#include "Player.hpp"
 
 class Game {
     public:
-        class Player {
-            public:
-                Player(std::shared_ptr<INetwork::IPeer> peer, const std::string &username);
-                Player() = default;
-                std::shared_ptr<INetwork::IPeer> _peer;
-                bool _isDisconnected = false;
-                bool _ready          = false;
-                std::string _username;
-        };
         Game();
         ~Game();
 
@@ -37,4 +29,5 @@ class Game {
 
         std::vector<std::string> _availableGameName        = {"Catan", "Test"};
         std::vector<std::string> _availableGameDescription = {"The catan game", "test game"};
+        std::unique_ptr<IGame> _game;
 };

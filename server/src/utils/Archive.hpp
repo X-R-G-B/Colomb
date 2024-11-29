@@ -5,7 +5,7 @@
 #include <vector>
 
 constexpr int MAX_PACKET_SIZE   = 2048;
-constexpr int COMPRESSION_LEVEL = 5;
+constexpr int COMPRESSION_LEVEL = 1;
 
 class Archive {
     public:

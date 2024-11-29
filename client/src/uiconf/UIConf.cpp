@@ -213,12 +213,16 @@ std::string UIConf::hash(const std::string &identifier)
 {
     std::ifstream file(UIConf::toFile(identifier));
     std::string all;
-    std::string line;
+    std::string bufferS;
+    std::vector<char> buffer(500, 0);
 
-    if (file.is_open() && !file.bad()) {
-        while (std::getline(file, all)) {
-            all += line;
+    while (!file.eof()) {
+        bufferS.clear();
+        file.read(buffer.data(), buffer.size());
+        for (int i = 0; buffer[i] != '\0'; i++) {
+            bufferS.push_back(buffer[i]);
         }
+        all = all + bufferS;
     }
     const auto hashed = std::hash<std::string> {}(all);
     return std::to_string(hashed);
