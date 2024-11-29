@@ -1,7 +1,7 @@
 #pragma once
 
-#include "IGame.hpp"
 #include "ConfigUI.hpp"
+#include "IGame.hpp"
 
 class Catan : public IGame {
     public:
@@ -20,7 +20,7 @@ class Catan : public IGame {
 
         std::unordered_map<std::string, PlayerState> _playersState;
 
-        bool _isFinished = false;
+        bool _isFinished  = false;
         bool _allConfigOk = false;
 
         std::unique_ptr<ConfigUI> _configUi;

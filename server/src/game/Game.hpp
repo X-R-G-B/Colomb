@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "INetwork.hpp"
 #include "IGame.hpp"
+#include "INetwork.hpp"
 #include "Player.hpp"
 
 class Game {

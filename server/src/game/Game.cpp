@@ -1,9 +1,9 @@
+#include "Game.hpp"
 #include <algorithm>
 #include <memory>
-#include "Game.hpp"
+#include "Catan.hpp"
 #include "INetwork.hpp"
 #include "Logger.hpp"
-#include "Catan.hpp"
 
 Game::Game()
 {
@@ -218,7 +218,8 @@ bool Game::startGame(const Player &player)
     if (_selectedGame.length() == 0) {
         return false;
     }
-    if (std::find(_availableGameName.begin(), _availableGameName.end(), _selectedGame) == _availableGameName.end()) {
+    if (std::find(_availableGameName.begin(), _availableGameName.end(), _selectedGame)
+        == _availableGameName.end()) {
         return false;
     }
     if (player._peer->getId() != _keyOwner) {

@@ -13,12 +13,11 @@ class ConfigUI {
         void update();
 
     private:
-
         class ConfigState {
             public:
-                bool _askedHash = false;
-                bool _ok = false;
-                int _nbChunk = -1;
+                bool _askedHash   = false;
+                bool _ok          = false;
+                int _nbChunk      = -1;
                 int _currentChunk = -1;
                 std::string _hashClient;
         };

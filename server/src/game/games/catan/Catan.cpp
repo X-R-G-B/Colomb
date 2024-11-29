@@ -2,14 +2,14 @@
 #include <memory>
 #include "Logger.hpp"
 
-Catan::Catan(): _players(_tmpPlayers)
+Catan::Catan() : _players(_tmpPlayers)
 {
     Logger::debug("Catan game created");
 }
 
 void Catan::init(std::unordered_map<std::string, Player> &players)
 {
-    _players = players;
+    _players  = players;
     _configUi = std::make_unique<ConfigUI>("catan.json");
     for (const auto &[key, pLayer] : _players) {
         _playersState[key] = PlayerState();

@@ -1,14 +1,14 @@
+#include "ConfigUI.hpp"
 #include <fstream>
 #include <functional>
 #include <string>
-#include "ConfigUI.hpp"
 #include "INetwork.hpp"
 #include "Logger.hpp"
 #include "PathResolver.hpp"
 
-ConfigUI::ConfigUI(const std::string &identifier):
-    _identifier(identifier),
-    _filePath(PathResolver::resolve("assets/uiconf/" + identifier))
+ConfigUI::ConfigUI(const std::string &identifier)
+    : _identifier(identifier),
+      _filePath(PathResolver::resolve("assets/uiconf/" + identifier))
 {
     std::ifstream file(_filePath);
     std::string all;
@@ -24,12 +24,12 @@ ConfigUI::ConfigUI(const std::string &identifier):
         _fileChunk.push_back(bufferS);
         all = all + bufferS;
     }
-    _fileHash = std::hash<std::string>{}(all);
+    _fileHash = std::hash<std::string> {}(all);
 }
 
 void ConfigUI::addPeer(std::shared_ptr<INetwork::IPeer> peer)
 {
-    _peers[peer->getId()] = peer;
+    _peers[peer->getId()]      = peer;
     _peersState[peer->getId()] = ConfigState();
 }
 
@@ -47,34 +47,40 @@ void ConfigUI::update()
             }
             const auto messageType = message.at("type").template get<std::string>();
             if (messageType == "uiConfigHash") {
-                if (!message.contains("name") || !message.contains("hash") || !message.at("name").is_string() || !message.at("hash").is_string()) {
+                if (!message.contains("name") || !message.contains("hash")
+                    || !message.at("name").is_string() || !message.at("hash").is_string()) {
                     continue;
                 }
                 const auto name = message.at("name").template get<std::string>();
                 const auto hash = message.at("hash").template get<std::string>();
                 if (name != _identifier) {
-                    network.send(pEer, {
-                        {"type", "uiConfigHash"},
-                        {"name", _identifier},
+                    network.send(
+                        pEer,
+                        {
+                            {"type", "uiConfigHash"},
+                            {"name", _identifier   },
                     });
                     continue;
                 }
                 if (hash != _fileHash) {
-                    pState._ok = false;
-                    pState._nbChunk = _fileChunk.size();
+                    pState._ok           = false;
+                    pState._nbChunk      = _fileChunk.size();
                     pState._currentChunk = -1;
-                    pState._hashClient = "";
+                    pState._hashClient   = "";
                 } else {
                     pState._ok = true;
                     Logger::debug("CONFIGUI: one client ok");
                 }
             } else if (messageType == "uiConfig") {
-                if (!message.contains("name") || !message.contains("nbChunk") || !message.at("name").is_string() || !message.at("nbChunk").is_number()) {
+                if (!message.contains("name") || !message.contains("nbChunk")
+                    || !message.at("name").is_string() || !message.at("nbChunk").is_number()) {
                     continue;
                 }
-                network.send(pEer, {
-                    {"type", "uiConfigHash"},
-                    {"name", _identifier},
+                network.send(
+                    pEer,
+                    {
+                        {"type", "uiConfigHash"},
+                        {"name", _identifier   },
                 });
             }
         }
@@ -82,9 +88,11 @@ void ConfigUI::update()
             continue;
         }
         if (!pState._askedHash) {
-            network.send(_peers[key], {
-                {"type", "uiConfigHash"},
-                {"name", _identifier},
+            network.send(
+                _peers[key],
+                {
+                    {"type", "uiConfigHash"},
+                    {"name", _identifier   },
             });
             pState._askedHash = true;
             continue;
@@ -99,12 +107,14 @@ void ConfigUI::update()
         if (pState._currentChunk == pState._nbChunk) {
             continue;
         }
-        network.send(pEer, {
-            {"type", "uiConfig"},
-            {"name", _identifier},
-            {"nbChunk", pState._nbChunk},
-            {"chunkIndex", pState._currentChunk},
-            {"data", _fileChunk[pState._currentChunk]},
+        network.send(
+            pEer,
+            {
+                {"type",       "uiConfig"                      },
+                {"name",       _identifier                     },
+                {"nbChunk",    pState._nbChunk                 },
+                {"chunkIndex", pState._currentChunk            },
+                {"data",       _fileChunk[pState._currentChunk]},
         });
     }
     return;
