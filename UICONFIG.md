@@ -62,7 +62,7 @@
 }                                           |
 ```
 
-### buttonImage
+### button_image
 
 ```
 {                                           |
@@ -78,7 +78,7 @@
 }                                           |
 ```
 
-### buttonText
+### button_text
 
 ```
 {                                           |
@@ -96,7 +96,7 @@
 }                                           |
 ```
 
-### textEntry
+### text_entry
 
 ```
 {                                           |

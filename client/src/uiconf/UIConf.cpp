@@ -8,6 +8,7 @@
 #include "INetwork.hpp"
 #include "Logger.hpp"
 #include "PathResolver.hpp"
+#include "Rectangle.hpp"
 #include "httplib.h"
 
 template <typename T>
@@ -89,8 +90,10 @@ std::optional<raylib::Color> json_get<raylib::Color>(const nlohmann::json &json,
     return json_get<raylib::Color>(json.at(key));
 }
 
-UIConf::UIConf(const std::string &file) : _json(nlohmann::json::parse(file))
+UIConf::UIConf(const std::string &file)
 {
+    std::ifstream f(file);
+    _json = nlohmann::json::parse(f);
     if (!_json.contains("name") || !_json.at("name").is_string()) {
         throw std::invalid_argument("`name` not in json or bad format (string expected)");
     }
@@ -120,13 +123,13 @@ UIConf::UIConf(const std::string &file) : _json(nlohmann::json::parse(file))
         if (uiType == "div") {
             _page.push_back(std::make_shared<UIDiv>(elem, _assets));
             _pageIndexes[id] = _page.size() - 1;
-        } else if (uiType == "buttonImage") {
+        } else if (uiType == "button_image") {
             _page.push_back(std::make_shared<UIButtonImage>(elem, _assets));
             _pageIndexes[id] = _page.size() - 1;
-        } else if (uiType == "buttonText") {
+        } else if (uiType == "button_text") {
             _page.push_back(std::make_shared<UIButtonText>(elem));
             _pageIndexes[id] = _page.size() - 1;
-        } else if (uiType == "textEntry") {
+        } else if (uiType == "text_entry") {
             _page.push_back(std::make_shared<UITextEntry>(elem));
             _pageIndexes[id] = _page.size() - 1;
         } else {
@@ -556,9 +559,17 @@ bool UIConf::UIButtonText::modify(
 
 void UIConf::UIButtonText::update(raylib::Window &window, float parentX, float parentY)
 {
-    if (_text != _textR.text) {
+    if (_text != _textR.text)
         _textR.text = _text;
-    }
+    if (_fgColor != raylib::Color(_textR.GetColor()))
+        _textR.SetColor(_fgColor);
+    const auto textSize = _textR.MeasureEx();
+    if (_rectR.width != textSize.x)
+        _rectR.SetWidth(textSize.x);
+    if (_rectR.height != textSize.y)
+        _rectR.SetHeight(textSize.y);
+    _rectR.SetX(parentX + _topLeftX);
+    _rectR.SetY(parentY + _topLeftY);
     if (!window.IsFocused()) {
         return;
     }
@@ -569,9 +580,7 @@ void UIConf::UIButtonText::update(raylib::Window &window, float parentX, float p
         return;
     }
     const auto mouse    = raylib::Mouse::GetPosition();
-    const auto textSize = _textR.MeasureEx();
-    const auto rect = raylib::Rectangle(parentX + _topLeftX, parentY + _topLeftY, textSize.x, textSize.y);
-    if (!rect.CheckCollision(mouse)) {
+    if (!_rectR.CheckCollision(mouse)) {
         return;
     }
     network.send({
@@ -585,6 +594,7 @@ void UIConf::UIButtonText::draw(raylib::Window & /* unused */, float parentX, fl
     if (!_visible) {
         return;
     }
+    _rectR.Draw(_bgColor);
     _textR.Draw(parentX + _topLeftX, parentY + _topLeftY);
 }
 

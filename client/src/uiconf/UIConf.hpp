@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include "raylib-cpp.hpp"
+#include "Rectangle.hpp"
 #include "nlohmann/json.hpp"
 
 class UIConf {
@@ -107,6 +108,7 @@ class UIConf {
                 bool _visible;
                 bool _clickable;
                 raylib::Text _textR;
+                raylib::Rectangle _rectR;
         };
 
         class UITextEntry : public IUI {

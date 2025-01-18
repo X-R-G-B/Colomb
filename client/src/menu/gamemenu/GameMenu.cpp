@@ -1,6 +1,7 @@
 #include "GameMenu.hpp"
 #include <memory>
 #include "INetwork.hpp"
+#include "Logger.hpp"
 #include "UIConf.hpp"
 
 GameMenu::GameMenu(raylib::Window & /* unused */)
@@ -64,6 +65,7 @@ void GameMenu::update(raylib::Window &window)
                 continue;
             }
             const auto name = message.at("name").template get<std::string>();
+            Logger::debug("GAME_MENU: name[" + name + "] | file[" + UIConf::toFile(name) + "]");
             _uiConf         = std::make_shared<UIConf>(UIConf::toFile(name));
         }
     }

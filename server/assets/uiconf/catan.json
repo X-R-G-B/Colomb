@@ -3,6 +3,17 @@
     "assets": {
     },
     "page": [
+        {
+            "id": "title",
+            "type": "button_text",
+            "topLeftX": 10.0,
+            "topLeftY": 10.0,
+            "bgColor": [0, 0, 0, 0],
+            "fgColor": [124, 252, 0, 0],
+            "text": "Catan",
+            "visible": true,
+            "clickable": false
+        }
     ],
     "popups": {
     }
