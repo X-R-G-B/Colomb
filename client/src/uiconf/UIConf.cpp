@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <stdexcept>
+#include <string>
 #include "INetwork.hpp"
 #include "Logger.hpp"
 #include "PathResolver.hpp"
@@ -213,19 +214,15 @@ std::string UIConf::hash(const std::string &identifier)
 {
     std::ifstream file(UIConf::toFile(identifier));
     std::string all;
-    std::string bufferS;
-    std::vector<char> buffer(500, 0);
 
-    while (!file.eof()) {
-        bufferS.clear();
-        file.read(buffer.data(), buffer.size());
-        for (int i = 0; buffer[i] != '\0'; i++) {
-            bufferS.push_back(buffer[i]);
-        }
-        all = all + bufferS;
-    }
-    const auto hashed = std::hash<std::string> {}(all);
-    return std::to_string(hashed);
+    file.seekg(0, std::ios::end);
+    all.reserve(file.tellg());
+    file.seekg(0, std::ios::beg);
+    all.assign((std::istreambuf_iterator<char>(file)),
+                std::istreambuf_iterator<char>());
+    const std::string hashed = std::to_string(std::hash<std::string> {}(all));
+    Logger::debug("hash_" + identifier + "_" + hashed);
+    return hashed;
 }
 
 bool UIConf::appendString(const std::string &identifier, const std::string &data)

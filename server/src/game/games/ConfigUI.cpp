@@ -6,25 +6,41 @@
 #include "Logger.hpp"
 #include "PathResolver.hpp"
 
+
+std::vector<std::string> split(const std::string& str, int splitLength)
+{
+    int NumSubstrings = str.length() / splitLength;
+    std::vector<std::string> ret;
+
+    for (auto i = 0; i < NumSubstrings; i++)
+    {
+        ret.push_back(str.substr(i * splitLength, splitLength));
+    }
+
+    // If there are leftover characters, create a shorter item at the end.
+    if (str.length() % splitLength != 0)
+    {
+        ret.push_back(str.substr(splitLength * NumSubstrings));
+    }
+
+    return ret;
+}
+
 ConfigUI::ConfigUI(const std::string &identifier)
     : _identifier(identifier),
       _filePath(PathResolver::resolve("assets/uiconf/" + identifier))
 {
     std::ifstream file(_filePath);
     std::string all;
-    std::string bufferS;
-    std::vector<char> buffer(500, 0);
 
-    while (!file.eof()) {
-        bufferS.clear();
-        file.read(buffer.data(), buffer.size());
-        for (int i = 0; buffer[i] != '\0'; i++) {
-            bufferS.push_back(buffer[i]);
-        }
-        _fileChunk.push_back(bufferS);
-        all = all + bufferS;
-    }
-    _fileHash = std::hash<std::string> {}(all);
+    file.seekg(0, std::ios::end);
+    all.reserve(file.tellg());
+    file.seekg(0, std::ios::beg);
+    all.assign((std::istreambuf_iterator<char>(file)),
+                std::istreambuf_iterator<char>());
+    _fileChunk = split(all, 500);
+    _fileHash = std::to_string(std::hash<std::string> {}(all));
+    Logger::debug("hash_" + _identifier + "_" + _fileHash);
 }
 
 void ConfigUI::addPeer(std::shared_ptr<INetwork::IPeer> peer)
