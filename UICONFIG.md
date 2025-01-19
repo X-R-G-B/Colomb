@@ -88,7 +88,8 @@
     "topLeftY": <y>,                        | Distance y from parent
     "bgColor": [<r>, <g>, <b>, <a>],        | Background color
     "fgColor": [<r>, <g>, <b>, <a>],        | Text color
-    "text": "<text>",                       |
+    "fgSize": <f>,                          | Text size
+    "text": "<text>",                       | Text
     "visible": <true/false>,                | Is it draw to screen
     "clickable": <true/false>,              | Is it clickable (it can be ...
                                             | ... invisible but still be ...
@@ -106,6 +107,7 @@
     "topLeftY": <y>,                        | Distance y from parent
     "bgColor": [<r>, <g>, <b>, <a>],        | Background color
     "fgColor": [<r>, <g>, <b>, <a>],        | Text color
+    "fgSize": <f>,                          | Text size
     "placeholder": "<text>",                | Text displayed before the ...
                                             | ... client enter some text
     "visible": <true/false>,                | Is it draw to screen
@@ -122,7 +124,8 @@
     "topLeftY": <y>,                        | Distance y from 0 (window)
     "bgColor": [<r>, <g>, <b>, <a>],        | Background color
     "fgColor": [<r>, <g>, <b>, <a>],        | Text color
-    "text": "<text>",                       |
+    "fgSize": <f>,                          | Text size
+    "text": "<text>",                       | Text
     "choices": {                            |
         "<key>": "<text>",                  | When the <text> is clicked ...
                                             | ... the key will be sent

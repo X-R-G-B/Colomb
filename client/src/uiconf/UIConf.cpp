@@ -507,6 +507,11 @@ UIConf::UIButtonText::UIButtonText(const nlohmann::json &config)
         throw std::runtime_error("`fgColor` not in json or bad format (array expected)");
     }
     _fgColor           = fgColor.value();
+    const auto fgSize = json_get<float>(config, "fgSize");
+    if (!fgSize.has_value()) {
+        throw std::runtime_error("`fgSize` not in json or bad format (float expected)");
+    }
+    _fgSize           = fgSize.value();
     const auto visible = json_get<bool>(config, "visible");
     if (!visible.has_value()) {
         throw std::runtime_error("`visible` not in json or bad format (bool expected)");
@@ -544,6 +549,8 @@ bool UIConf::UIButtonText::modify(
                 return false;
             }
             _fgColor = fgColor.value();
+        } else if (key == "fgSize") {
+            _fgSize = value.template get<float>();
         } else if (key == "visible" && value.is_boolean()) {
             _visible = value.template get<bool>();
         } else if (key == "clickable" && value.is_boolean()) {
@@ -563,6 +570,10 @@ void UIConf::UIButtonText::update(raylib::Window &window, float parentX, float p
         _textR.text = _text;
     if (_fgColor != raylib::Color(_textR.GetColor()))
         _textR.SetColor(_fgColor);
+    if (_textR.GetFontSize() != _fgSize)
+        _textR.SetFontSize(_fgSize);
+    if (_textR.GetSpacing() != _fgSpacing)
+        _textR.SetSpacing(_fgSpacing);
     const auto textSize = _textR.MeasureEx();
     if (_rectR.width != textSize.x)
         _rectR.SetWidth(textSize.x);
@@ -644,6 +655,11 @@ UIConf::UITextEntry::UITextEntry(const nlohmann::json &config)
     if (!visible.has_value()) {
         throw std::runtime_error("`visible` not in json or bad format (bool expected)");
     }
+    const auto fgSize = json_get<float>(config, "fgSize");
+    if (!fgSize.has_value()) {
+        throw std::runtime_error("`fgSize` not in json or bad format (float expected)");
+    }
+    _fgSize           = fgSize.value();
     _visible             = visible.value();
     const auto clickable = json_get<bool>(config, "clickable");
     if (!clickable.has_value()) {
@@ -677,6 +693,8 @@ bool UIConf::UITextEntry::modify(
                 return false;
             }
             _fgColor = fgColor.value();
+        } else if (key == "fgSize") {
+            _fgSize = value.template get<float>();
         } else if (key == "visible" && value.is_boolean()) {
             _visible = value.template get<bool>();
         } else if (key == "clickable" && value.is_boolean()) {
@@ -787,6 +805,11 @@ UIConf::UIPopUp::UIPopUp(const std::string &id, const nlohmann::json &config)
     if (!visible.has_value()) {
         throw std::runtime_error("`visible` not in json or bad format (bool expected)");
     }
+    const auto fgSize = json_get<float>(config, "fgSize");
+    if (!fgSize.has_value()) {
+        throw std::runtime_error("`fgSize` not in json or bad format (float expected)");
+    }
+    _fgSize           = fgSize.value();
     _visible = visible.value();
     if (!config.contains("choices") || !config.at("choices").is_object()) {
         throw std::runtime_error("`choices` not in json or bad format (object expected)");
@@ -824,6 +847,8 @@ bool UIConf::UIPopUp::modify(
                 return false;
             }
             _fgColor = fgColor.value();
+        } else if (key == "fgSize") {
+            _fgSize = value.template get<float>();
         } else if (key == "choices") {
             _choices.clear();
             for (const auto &[key, value] : value.items()) {

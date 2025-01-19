@@ -104,6 +104,8 @@ class UIConf {
                 float _topLeftY;
                 raylib::Color _bgColor;
                 raylib::Color _fgColor;
+                float _fgSize;
+                float _fgSpacing = 2;
                 std::string _text;
                 bool _visible;
                 bool _clickable;
@@ -131,6 +133,8 @@ class UIConf {
                 float _topLeftY;
                 raylib::Color _bgColor;
                 raylib::Color _fgColor;
+                float _fgSize;
+                float _fgSpacing = 2;
                 std::string _placeholder;
                 bool _visible;
                 bool _clickable;
@@ -159,6 +163,7 @@ class UIConf {
                 float _topLeftY;
                 raylib::Color _bgColor;
                 raylib::Color _fgColor;
+                float _fgSize;
                 std::string _text;
                 std::map<std::string, std::string> _choices;
                 bool _visible;

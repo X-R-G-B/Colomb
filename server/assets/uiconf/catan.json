@@ -6,10 +6,11 @@
         {
             "id": "title",
             "type": "button_text",
-            "topLeftX": 10.0,
+            "topLeftX": 300.0,
             "topLeftY": 10.0,
-            "bgColor": [0, 0, 0, 0],
-            "fgColor": [124, 252, 0, 0],
+            "bgColor": [0, 0, 0, 255],
+            "fgColor": [124, 252, 0, 255],
+            "fgSize": 25.0,
             "text": "Catan",
             "visible": true,
             "clickable": false
