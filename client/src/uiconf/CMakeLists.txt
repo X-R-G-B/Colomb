@@ -11,3 +11,5 @@ target_sources(
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/UIConf.cpp
 )
+
+add_subdirectory(uiitem)
